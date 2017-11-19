@@ -1,0 +1,9 @@
+#JSGF V1.0;
+
+grammar command;
+
+<command> = next    |
+          preview  |
+          validate   ;
+
+public <commands> = <command>+;
