@@ -25,44 +25,38 @@ public class BoissonFragment extends android.support.v4.app.Fragment {
     private String viande="";
     private String pain;
     private String sauce;
+
     public static void choiximg(ImageView iv,String a){
         switch(a){
-            case "EAU":
-                iv.setImageResource(R.drawable.eau);
-                return;
             case "COCA-COLA":
                 iv.setImageResource(R.drawable.coca);
+                return;
+            case "OASIS-TROPICAL":
+                iv.setImageResource(R.drawable.oasis_tropical);
                 return ;
-            case "OASIS":
-                iv.setImageResource(R.drawable.oasis);
+
+            case "COCA-CHERY":
+                iv.setImageResource(R.drawable.cocacherry);
                 return ;
-            case "FANTA":
-                iv.setImageResource(R.drawable.fanta);
-                return ;
-            case "ORANGINA":
-                iv.setImageResource(R.drawable.or);
-                return ;
-            case "7UP":
-                iv.setImageResource(R.drawable.up);
+            case "7UP-MOJITO":
+                iv.setImageResource(R.drawable.upmo);
                 return ;
 
         }
 
     }
+
     public static String choix(int a){
         switch(a){
             case 0:
-                return"EAU";
-            case 1:
                 return"COCA-COLA";
-            case 2:
-                return"OASIS";
-            case 3:
-                return"FANTA";
+            case 1:
+                return"OASIS-TROPICAL";
+
             case 4:
-                return"ORANGINA";
+                return"COCA-CHERY";
             case 5:
-                return"7UP";
+                return"7UP-MOJITO";
 
         }
         return "";
@@ -70,7 +64,7 @@ public class BoissonFragment extends android.support.v4.app.Fragment {
     public void affichage(int a,String pain,String sauce,String  viande){
         boisson=choix(a);
         this.viande=viande;
-       this.pain=pain;
+        this.pain=pain;
         this.sauce=sauce;
 
 

@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import amazouz.com.example.hp.tacos.R;
+import amazouz.com.example.hp.tacos.activity.DrinkActivity;
 import amazouz.com.example.hp.tacos.activity.ViandeActivity;
 
 /**
@@ -23,22 +24,24 @@ public class SauceFragment extends android.support.v4.app.Fragment {
     private ImageView iv;
     private String sauce="";
     private String pain="";
+    private String viande="";
     public static void choiximg(ImageView iv,String a){
         switch(a){
-            case "SAMURAI":
-                iv.setImageResource(R.drawable.sam);
-                return ;
+
             case "ALGERIENNE":
-                iv.setImageResource(R.drawable.alg);
+                iv.setImageResource(R.drawable.algerienne);
                 return ;
-            case "BLANCHE":
-                iv.setImageResource(R.drawable.bla);
+            case "CHEEZY":
+                iv.setImageResource(R.drawable.cheezy);
                 return ;
-            case "CURRY":
-                iv.setImageResource(R.drawable.cur);
+            case "MAYONAISE":
+                iv.setImageResource(R.drawable.mayonaise);
                 return ;
             case "HARISSA":
-                iv.setImageResource(R.drawable.har);
+                iv.setImageResource(R.drawable.harissa);
+                return ;
+            case "KETCHUP":
+                iv.setImageResource(R.drawable.ketchup);
                 return ;
 
         }
@@ -47,24 +50,25 @@ public class SauceFragment extends android.support.v4.app.Fragment {
     public static String choix(int a){
         switch(a){
             case 0:
-                return"SAMURAI";
-
-            case 1:
                 return"ALGERIENNE";
 
+            case 1:
+                return"KETCHUP";
+
             case 2:
-                return"BLANCHE";
+                return"MAYONAISE";
             case 3:
-                return"CURRY";
+                return"CHEEZY";
             case 4:
                 return"HARISSA";
 
         }
         return "";
     }
-    public void affichage(int a,String pain){
+    public void affichage(int a,String pain,String viande){
         sauce=choix(a);
         this.pain=pain;
+        this.viande=viande;
 
     }
 
@@ -83,8 +87,8 @@ public class SauceFragment extends android.support.v4.app.Fragment {
         but1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toy=new Intent(getContext(),ViandeActivity.class);
-
+                Intent toy=new Intent(getContext(),DrinkActivity.class);
+                toy.putExtra("viande",viande);
                 toy.putExtra("sauce",sauce);
                 toy.putExtra("pain",pain);
                 startActivity(toy);

@@ -6,6 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -28,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.Locale;
 
 import amazouz.com.example.hp.tacos.fragment.PainFragment;
@@ -35,8 +41,9 @@ import amazouz.com.example.hp.tacos.R;
 import amazouz.com.example.hp.tacos.service.VoiceService;
 import android.speech.tts.TextToSpeech;
 
-public class PainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener{
 
+
+public class PainActivity extends AppCompatActivity {
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -46,7 +53,12 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
+    private PainFragment pain;
+    private SensorManager mSensorManager;
+    private Sensor mProximity;
+    private Date date;
+    private int startTime = 0, endTime = 0, numberOfSlidesPerSecond = 0;
+    private boolean firstLaunch = false;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -68,23 +80,29 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        t1 = new TextToSpeech(this, this);
+        t1 = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                speakOut("bienvenu");
+            }
+        });
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         startService(new Intent(PainActivity.this, VoiceService.class));
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+        if (mProximity != null) {
+            mSensorManager.registerListener(proximitySensorEventListener,
+                    mProximity,
+                    SensorManager.SENSOR_DELAY_NORMAL
+            );
+        }
 
         activityReceiver = new BroadcastReceiver() {
 
@@ -93,18 +111,21 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
                 voiceCommand =intent.getStringExtra("value");
 
-                if(voiceCommand.equalsIgnoreCase("nextstep")){
+                if(voiceCommand.equalsIgnoreCase("next step")){
 
+
+                    pg=mViewPager.getCurrentItem();
                     if(pg<mSectionsPagerAdapter.getCount()-1) {
-
                         pg=pg + 1;
                         mViewPager.setCurrentItem(pg);
                         speechChoice(pg);
 
-
                     }
 
-                }else if(voiceCommand.equalsIgnoreCase("previewstep")){
+                }else if(voiceCommand.equalsIgnoreCase("preview step")){
+
+
+                    pg=mViewPager.getCurrentItem();
                     if(pg>0){
                         pg=pg-1;
                         mViewPager.setCurrentItem(pg);
@@ -122,6 +143,7 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         };
 
+
         if (activityReceiver != null) {
 
             IntentFilter intentFilter = new IntentFilter(ACTION_STRING_ACTIVITY);
@@ -129,12 +151,12 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
         }
 
-
-
         gauche=(ImageView)findViewById(R.id.gc1);
         gauche.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                pg=mViewPager.getCurrentItem();
                 if(pg>0){
                     pg=pg-1;
                 mViewPager.setCurrentItem(pg);
@@ -147,6 +169,7 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         droite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                pg=mViewPager.getCurrentItem();
                 if(pg<mSectionsPagerAdapter.getCount()-1) {
                         pg=pg + 1;
                     mViewPager.setCurrentItem(pg);
@@ -155,8 +178,6 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 }
             }
         });
-
-
     }
 
 
@@ -182,30 +203,6 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onInit(int status) {
-
-        if (status == TextToSpeech.SUCCESS) {
-
-            int result = t1.setLanguage(Locale.FRANCE);
-
-             //t1.setPitch(5); // set pitch level
-
-            //t1.setSpeechRate(2); // set speech speed rate
-
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "Language is not supported");
-            } else {
-                speakOut("bienvenu");
-            }
-
-        } else {
-            Log.e("TTS", "Initilization Failed");
-        }
-
-
-    }
 
     /**
      * A placeholder fragment containing a simple view.
@@ -249,7 +246,6 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
-
         }
 
         @Override
@@ -257,7 +253,7 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
            // return PlaceholderFragment.newInstance(position + 1);
-            PainFragment pain=new PainFragment();
+            pain=new PainFragment();
             switch(position){
                 case 0:
                     pain.affichage(0);
@@ -268,6 +264,16 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 case 2:
                     pain.affichage(2);
                     return pain;
+                case 3:
+
+                    pain.affichage(3);
+                    return pain;
+                case 4:
+                    pain.affichage(4);
+                    return pain;
+                case 5:
+                    pain.affichage(5);
+                    return pain;
 
             }
             return null;
@@ -276,7 +282,7 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 5;
         }
 
 
@@ -301,19 +307,106 @@ public class PainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         switch (choice){
 
             case 0:
-                speakOut("Pain normal");
+                speakOut("Le Mini");
                 break;
 
 
             case 1:
-                speakOut("Pain Libanais");
+                speakOut("Le Simple");
                 break;
 
             case 2:
-                speakOut("Galette");
+                speakOut("Le Double");
                 break;
 
+            case 3:
+                speakOut("Le Maxi");
+                break;
+
+            case 4:
+                speakOut("Le Méga");
+                break;
         }
 
     }
+
+    SensorEventListener proximitySensorEventListener = new SensorEventListener() {
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            // TODO Auto-generated method stub
+
+            if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+
+                if (event.values[0] == 0.0) {
+                    date = new Date();
+                    startTime = date.getSeconds();
+
+                }
+
+                if (event.values[0] == 1.0) {
+
+                    numberOfSlidesPerSecond++;
+
+                    //Test after 500ms
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+
+                            date = new Date();
+                            endTime = date.getSeconds();
+
+
+                            if (endTime > startTime + 2) {
+                                // ====== Validate action ======
+
+                                if(firstLaunch != false)
+                                    pain.click(activityReceiver);
+                                  mSensorManager.unregisterListener(proximitySensorEventListener);  // new add
+
+                            } else if (numberOfSlidesPerSecond > 1) {
+                                // ====== Slice twice action =======
+                                pg=mViewPager.getCurrentItem();
+                                if(pg>0){
+                                    pg=pg-1;
+                                    mViewPager.setCurrentItem(pg); // rak dayro hna !!! att atla3lfou9kamel
+                                    speechChoice(pg);
+                                }
+
+                            } else {
+                                // ====== Slice once action =======
+                                pg=mViewPager.getCurrentItem();
+                                if(pg<mSectionsPagerAdapter.getCount()-1) {
+                                    pg=pg + 1;
+                                    mViewPager.setCurrentItem(pg);
+                                    speechChoice(pg);
+
+                                }
+                            }
+                        }
+                    }, 500);
+
+                    Handler handlerNumberOfSlides = new Handler();
+                    handlerNumberOfSlides.postDelayed(new Runnable() {
+                        public void run() {
+                            numberOfSlidesPerSecond = 0;
+                            firstLaunch = true;
+                        }
+                    }, 1500);
+
+
+                }
+
+            }
+
+        }
+
+
+    };
 }

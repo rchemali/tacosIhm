@@ -1,5 +1,6 @@
 package amazouz.com.example.hp.tacos.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -17,50 +18,72 @@ import java.util.Locale;
 
 import amazouz.com.example.hp.tacos.R;
 import amazouz.com.example.hp.tacos.activity.SauceActivity;
+import amazouz.com.example.hp.tacos.activity.ViandeActivity;
 
 /**
  * Created by HP on 08/11/2017.
  */
 
 public class PainFragment extends Fragment{
-
     public LinearLayout but1;
     private TextView tx;
     private ImageView iv;
-    private String pain="";
 
+
+    private String pain="";
     public static String choix(int a){
         switch(a){
             case 0:
-                return"pain normal";
+                return"Mini";
             case 1:
-                return"libanais";
+                return"Simple";
             case 2:
-                return"galette";
+                return"Double";
+            case 3:
+                return"Maxi";
+            case 4:
+                return"Mega";
+            case 5:
+                return"Giga";
 
         }
         return "";
     }
     public static void choiximg(ImageView iv,String a){
         switch(a){
-            case "pain normal":
-                iv.setImageResource(R.drawable.painnormal);
+            case "Mini":
+                iv.setImageResource(R.drawable.mini);
                 return ;
-            case "libanais":
-                iv.setImageResource(R.drawable.libanais);
+            case "Simple":
+                iv.setImageResource(R.drawable.simple);
                 return ;
-            case "galette":
-                iv.setImageResource(R.drawable.galette);
+            case "Double":
+                iv.setImageResource(R.drawable.doublee);
+                return ;
+            case "Maxi":
+                iv.setImageResource(R.drawable.maxi);
+                return ;
+            case "Mega":
+                iv.setImageResource(R.drawable.mega);
+                return ;
+            case "Giga":
+                iv.setImageResource(R.drawable.gega);
                 return ;
 
         }
 
     }
 
+public void click(BroadcastReceiver activityReceiver){
+    Intent toy=new Intent(getContext(),ViandeActivity.class);
+    toy.putExtra("pain",pain);
+    startActivity(toy);
+    getActivity().unregisterReceiver(activityReceiver);
+
+}
+
     public void affichage(int a){
-       pain=choix(a);
-
-
+        pain=choix(a);
     }
 
 
@@ -71,14 +94,16 @@ public class PainFragment extends Fragment{
         View view = inflater.inflate(R.layout.pain1,container,false);
 
         but1=(LinearLayout) view.findViewById(R.id.butt1);
-        tx=(TextView)view.findViewById(R.id.txtv) ;
+
+        //tx=(TextView)view.findViewById(R.id.txtv) ;
         iv=(ImageView)view.findViewById(R.id.imageView);
         choiximg(iv,pain);
-        tx.setText(pain);
+        //tx.setText(pain);
         but1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toy=new Intent(getContext(),SauceActivity.class);
+
+                Intent toy=new Intent(getContext(),ViandeActivity.class);
                 toy.putExtra("pain",pain);
                 startActivity(toy);
             }
@@ -86,6 +111,5 @@ public class PainFragment extends Fragment{
 
         return view ;
     }
-
 
 }

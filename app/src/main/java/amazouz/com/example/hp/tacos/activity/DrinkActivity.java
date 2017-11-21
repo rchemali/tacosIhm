@@ -1,6 +1,15 @@
 package amazouz.com.example.hp.tacos.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,30 +26,41 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Date;
 
 import amazouz.com.example.hp.tacos.fragment.BoissonFragment;
 import amazouz.com.example.hp.tacos.R;
 
 public class DrinkActivity extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
     private ViewPager mViewPager;
     private String pain;
     private String sauce;
     private String viande;
+
+    private SensorManager mSensorManager;
+    private Sensor mProximity;
+    private Date date;
+    private int startTime = 0, endTime = 0, numberOfSlidesPerSecond = 0;
+    private boolean firstLaunch = false;
+
+    private int pg=0;
+    private ImageView gauche;
+    private ImageView droite;
+    private static final String ACTION_STRING_ACTIVITY = "ToActivity";
+    BroadcastReceiver activityReceiver;
+    String voiceCommand = "";
+    private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
+    TextToSpeech t1 ;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,17 +84,206 @@ public class DrinkActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        t1 = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onInit(int status) {
+                speakOut("Menu Boisson");
             }
         });
 
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+
+        if (mProximity != null) {
+            mSensorManager.registerListener(proximitySensorEventListener,
+                    mProximity,
+                    SensorManager.SENSOR_DELAY_NORMAL
+            );
+        }
+
+        activityReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                voiceCommand =intent.getStringExtra("value");
+
+                if(voiceCommand.equalsIgnoreCase("next step")){
+
+
+                    pg=mViewPager.getCurrentItem();
+                    if(pg<mSectionsPagerAdapter.getCount()-1) {
+                        pg=pg + 1;
+                        mViewPager.setCurrentItem(pg);
+                        speechChoice(pg);
+
+                    }
+
+                }else if(voiceCommand.equalsIgnoreCase("preview step")){
+
+
+                    pg=mViewPager.getCurrentItem();
+                    if(pg>0){
+                        pg=pg-1;
+                        mViewPager.setCurrentItem(pg);
+                        speechChoice(pg);
+
+                    }
+
+                }else if(voiceCommand.equalsIgnoreCase("finish")){
+
+                    Toast.makeText(getApplication(),"validate",Toast.LENGTH_LONG).show();
+
+                }
+
+
+            }
+        };
+
+
+        if (activityReceiver != null) {
+
+            IntentFilter intentFilter = new IntentFilter(ACTION_STRING_ACTIVITY);
+            registerReceiver(activityReceiver, intentFilter);
+
+        }
+
+        gauche=(ImageView)findViewById(R.id.gc1);
+        gauche.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                pg=mViewPager.getCurrentItem();
+                if(pg>0){
+                    pg=pg-1;
+                    mViewPager.setCurrentItem(pg);
+                    speechChoice(pg);
+
+                }
+            }
+        });
+
+        droite=(ImageView)findViewById(R.id.dr1);
+        droite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pg=mViewPager.getCurrentItem();
+                if(pg<mSectionsPagerAdapter.getCount()-1) {
+                    pg=pg + 1;
+                    mViewPager.setCurrentItem(pg);
+                    speechChoice(pg);
+
+                }
+            }
+        });
+
+
     }
 
+
+    private void speakOut(String voice) {
+        t1.speak(voice, TextToSpeech.QUEUE_FLUSH, null);
+    }
+    public void speechChoice(int choice){
+
+        switch (choice){
+
+            case 0:
+                speakOut("Coca");
+                break;
+
+
+            case 1:
+                speakOut("Oasis");
+                break;
+
+            case 2:
+                speakOut("Coca chery");
+                break;
+
+            case 3:
+                speakOut("Seven up");
+                break;
+
+        }
+
+    }
+
+    SensorEventListener proximitySensorEventListener = new SensorEventListener() {
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            // TODO Auto-generated method stub
+
+            if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+
+                if (event.values[0] == 0.0) {
+                    date = new Date();
+                    startTime = date.getSeconds();
+
+                }
+
+                if (event.values[0] == 1.0) {
+
+
+                    numberOfSlidesPerSecond++;
+
+                    //Test after 500ms
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+
+                            date = new Date();
+                            endTime = date.getSeconds();
+
+
+                            if (endTime > startTime + 2) {
+                                // ====== Validate action ======
+
+                                if(firstLaunch != false){
+                                    // le click !!
+                                }
+
+                            } else if (numberOfSlidesPerSecond > 1) {
+                                // ====== Slice twice action =======
+                                pg=mViewPager.getCurrentItem();
+                                if(pg>0){
+                                    pg=pg-1;
+                                    mViewPager.setCurrentItem(pg); // rak dayro hna !!! att atla3lfou9kamel
+                                    speechChoice(pg);
+                                }
+
+                            } else {
+                                // ====== Slice once action =======
+                                pg=mViewPager.getCurrentItem();
+                                if(pg<mSectionsPagerAdapter.getCount()-1) {
+                                    pg=pg + 1;
+                                    mViewPager.setCurrentItem(pg);
+                                    speechChoice(pg);
+
+                                }
+                            }
+                        }
+                    }, 500);
+
+                    Handler handlerNumberOfSlides = new Handler();
+                    handlerNumberOfSlides.postDelayed(new Runnable() {
+                        public void run() {
+                            numberOfSlidesPerSecond = 0;
+                            firstLaunch = true;
+                        }
+                    }, 1500);
+
+                }
+            }
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
