@@ -232,9 +232,9 @@ public class PainActivity extends AppCompatActivity {
 
 
         }
-       dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
-      dots[0].getLayoutParams().height=250;
-       dots[0].getLayoutParams().width=250;
+      // dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
+     // dots[0].getLayoutParams().height=250;
+     //  dots[0].getLayoutParams().width=250;
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -253,23 +253,23 @@ public class PainActivity extends AppCompatActivity {
 
                             break ;}
                         case 1:
-                        {        dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.simple));
-                            dots[i].getLayoutParams().height=150;
-                            dots[i].getLayoutParams().width=150;
+                        {       dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
+                            dots[i].getLayoutParams().height=250;
+                            dots[i].getLayoutParams().width=250;
                             break;}
                         case 2:
-                        {  dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.doublee));
+                        {  dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
                             dots[i].getLayoutParams().height=150;
                             dots[i].getLayoutParams().width=150;
                             break;}
                         case 3:
 
-                        {   dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.maxi));
+                        {   dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
                             dots[i].getLayoutParams().height=150;
                             dots[i].getLayoutParams().width=150;
                             break;}
                         case 4:
-                        {   dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mega));
+                        {  dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
                             dots[i].getLayoutParams().height=150;
                             dots[i].getLayoutParams().width=150;
                             break;
@@ -279,7 +279,9 @@ public class PainActivity extends AppCompatActivity {
 
                 }
                 //dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini+position+'1'));
-                switch(position){
+                //dots[position].getLayoutParams().height=250;
+               // dots[position].getLayoutParams().width=250;
+               /* switch(position){
                     case 0:
 
                     {       dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
@@ -309,7 +311,7 @@ public class PainActivity extends AppCompatActivity {
                         dots[position].getLayoutParams().width=250;
                         break;}
 
-                }
+                }*/
 
 
 
