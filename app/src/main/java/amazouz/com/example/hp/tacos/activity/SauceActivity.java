@@ -261,7 +261,8 @@ public class SauceActivity extends AppCompatActivity {
                                 // ====== Validate action ======
 
                                 if(firstLaunch != false){
-                                    // le click !!
+                                    unregisterReceiver(activityReceiver);
+                                    mSensorManager.unregisterListener(proximitySensorEventListener);
                                 }
 
                             } else if (numberOfSlidesPerSecond > 1) {
@@ -372,6 +373,14 @@ public class SauceActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             // return PlaceholderFragment.newInstance(position + 1);
             SauceFragment sauce=new SauceFragment();
+            sauce.fragmentexchange = new SauceFragment.fragmentexchange() {
+                @Override
+                public void onclick() {
+                    unregisterReceiver(activityReceiver);
+                    mSensorManager.unregisterListener(proximitySensorEventListener);
+                }
+            };
+
             switch(position){
                 case 0:
 

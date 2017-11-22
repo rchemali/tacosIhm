@@ -4,6 +4,8 @@ grammar command;
 
 <command> = next    |
           preview  |
-          validate   ;
+          ok  |
+          please  |
+            validate;
 
 public <commands> = <command>+;

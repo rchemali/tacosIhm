@@ -26,6 +26,8 @@ public class BoissonFragment extends android.support.v4.app.Fragment {
     private String pain;
     private String sauce;
 
+    public fragmentexchange fragmentexchange = null;
+
     public static void choiximg(ImageView iv,String a){
         switch(a){
             case "COCA-COLA":
@@ -34,7 +36,6 @@ public class BoissonFragment extends android.support.v4.app.Fragment {
             case "OASIS-TROPICAL":
                 iv.setImageResource(R.drawable.oasis_tropical);
                 return ;
-
             case "COCA-CHERY":
                 iv.setImageResource(R.drawable.cocacherry);
                 return ;
@@ -52,10 +53,9 @@ public class BoissonFragment extends android.support.v4.app.Fragment {
                 return"COCA-COLA";
             case 1:
                 return"OASIS-TROPICAL";
-
-            case 4:
+            case 2:
                 return"COCA-CHERY";
-            case 5:
+            case 3:
                 return"7UP-MOJITO";
 
         }
@@ -91,9 +91,21 @@ public class BoissonFragment extends android.support.v4.app.Fragment {
                 toy.putExtra("viande",viande);
                 toy.putExtra("boisson",boisson);
                 startActivity(toy);
+                if (fragmentexchange != null) {
+
+                    fragmentexchange.onclick();
+
+                }
             }
         });
 
         return view ;
     }
+
+    public interface fragmentexchange{
+
+        public void onclick();
+
+    }
+
 }

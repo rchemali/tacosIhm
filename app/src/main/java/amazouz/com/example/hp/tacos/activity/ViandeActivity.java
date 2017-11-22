@@ -116,6 +116,8 @@ public class ViandeActivity extends AppCompatActivity {
 
                 voiceCommand =intent.getStringExtra("value");
 
+                Toast.makeText(getApplication(),voiceCommand,Toast.LENGTH_LONG).show();
+
                 if(voiceCommand.equalsIgnoreCase("next step")){
 
 
@@ -138,9 +140,9 @@ public class ViandeActivity extends AppCompatActivity {
 
                     }
 
-                }else if(voiceCommand.equalsIgnoreCase("finish")){
+                }else if(voiceCommand.equalsIgnoreCase("please validate")){
 
-                    Toast.makeText(getApplication(),"validate",Toast.LENGTH_LONG).show();
+                    speakOut("valider");
 
                 }
 
@@ -259,7 +261,10 @@ public class ViandeActivity extends AppCompatActivity {
                                 // ====== Validate action ======
 
                                 if(firstLaunch != false){
-                                    // le click !!
+
+                                    unregisterReceiver(activityReceiver);
+                                    mSensorManager.unregisterListener(proximitySensorEventListener);
+
                                 }
 
                             } else if (numberOfSlidesPerSecond > 1) {
@@ -375,6 +380,14 @@ public class ViandeActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             // return PlaceholderFragment.newInstance(position + 1);
             ViandeFragment viande=new ViandeFragment();
+            viande.fragmentexchange = new ViandeFragment.fragmentexchange() {
+                @Override
+                public void onclick() {
+                    unregisterReceiver(activityReceiver);
+                    mSensorManager.unregisterListener(proximitySensorEventListener);
+                }
+            };
+
             switch(position){
                 case 0:
 

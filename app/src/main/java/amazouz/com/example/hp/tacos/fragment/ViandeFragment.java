@@ -25,6 +25,8 @@ public class ViandeFragment extends android.support.v4.app.Fragment{
     private String viande="";
     private String pain;
 
+    public fragmentexchange fragmentexchange = null ;
+
     public static void choiximg(ImageView iv,String a){
         switch(a){
             case "POULET":
@@ -88,9 +90,21 @@ public class ViandeFragment extends android.support.v4.app.Fragment{
                 toy.putExtra("pain",pain);
                 toy.putExtra("viande",viande);
                 startActivity(toy);
+                if (fragmentexchange != null) {
+
+                    fragmentexchange.onclick();
+
+                }
             }
         });
 
         return view ;
     }
+
+    public interface fragmentexchange{
+
+        public void onclick();
+
+    }
+
 }

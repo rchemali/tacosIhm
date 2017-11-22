@@ -247,7 +247,8 @@ public class DrinkActivity extends AppCompatActivity {
                                 // ====== Validate action ======
 
                                 if(firstLaunch != false){
-                                    // le click !!
+                                    unregisterReceiver(activityReceiver);
+                                    mSensorManager.unregisterListener(proximitySensorEventListener);
                                 }
 
                             } else if (numberOfSlidesPerSecond > 1) {
@@ -358,6 +359,14 @@ public class DrinkActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             //return PlaceholderFragment.newInstance(position + 1);
             BoissonFragment boisson=new BoissonFragment();
+            boisson.fragmentexchange = new BoissonFragment.fragmentexchange() {
+                @Override
+                public void onclick() {
+                    unregisterReceiver(activityReceiver);
+                    mSensorManager.unregisterListener(proximitySensorEventListener);
+                }
+            };
+
             switch(position){
                 case 0:
 
@@ -372,12 +381,12 @@ public class DrinkActivity extends AppCompatActivity {
                 case 3:
                     boisson.affichage(3,pain,sauce,viande);
                     return boisson;
-                case 4:
+         /*       case 4:
                     boisson.affichage(4,pain,sauce,viande);
                     return boisson;
                 case 5:
                     boisson.affichage(5,pain,sauce,viande);
-                    return boisson;
+                    return boisson;   */
 
             }
             return null;
@@ -386,7 +395,7 @@ public class DrinkActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 6;
+            return 4;
         }
     }
 }

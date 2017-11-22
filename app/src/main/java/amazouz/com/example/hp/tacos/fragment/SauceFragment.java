@@ -25,6 +25,8 @@ public class SauceFragment extends android.support.v4.app.Fragment {
     private String sauce="";
     private String pain="";
     private String viande="";
+    public fragmentexchange fragmentexchange = null;
+
     public static void choiximg(ImageView iv,String a){
         switch(a){
 
@@ -92,9 +94,21 @@ public class SauceFragment extends android.support.v4.app.Fragment {
                 toy.putExtra("sauce",sauce);
                 toy.putExtra("pain",pain);
                 startActivity(toy);
+                if (fragmentexchange != null) {
+
+                    fragmentexchange.onclick();
+
+                }
             }
         });
 
         return view ;
     }
+
+    public interface fragmentexchange{
+
+        public void onclick();
+
+    }
+
 }

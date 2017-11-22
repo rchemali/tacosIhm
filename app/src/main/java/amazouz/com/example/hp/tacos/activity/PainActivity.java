@@ -87,6 +87,7 @@ public class PainActivity extends AppCompatActivity {
             }
         });
 
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -111,7 +112,7 @@ public class PainActivity extends AppCompatActivity {
 
                 voiceCommand =intent.getStringExtra("value");
 
-                if(voiceCommand.equalsIgnoreCase("next step")){
+                if(voiceCommand.equalsIgnoreCase("next step") || voiceCommand.equalsIgnoreCase("next")){
 
 
                     pg=mViewPager.getCurrentItem();
@@ -122,7 +123,7 @@ public class PainActivity extends AppCompatActivity {
 
                     }
 
-                }else if(voiceCommand.equalsIgnoreCase("preview step")){
+                }else if(voiceCommand.equalsIgnoreCase("preview step") || voiceCommand.equalsIgnoreCase("preview")){
 
 
                     pg=mViewPager.getCurrentItem();
@@ -254,6 +255,17 @@ public class PainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
            // return PlaceholderFragment.newInstance(position + 1);
             pain=new PainFragment();
+
+            pain.fragmentexchange = new PainFragment.fragmentexchange() {
+                @Override
+                public void onclick() {
+
+                    unregisterReceiver(activityReceiver);
+                    mSensorManager.unregisterListener(proximitySensorEventListener);  // new add
+
+
+                }
+            };
             switch(position){
                 case 0:
                     pain.affichage(0);
@@ -368,7 +380,7 @@ public class PainActivity extends AppCompatActivity {
 
                                 if(firstLaunch != false)
                                     pain.click(activityReceiver);
-                                  mSensorManager.unregisterListener(proximitySensorEventListener);  // new add
+                                  // mSensorManager.unregisterListener(proximitySensorEventListener);  // new add
 
                             } else if (numberOfSlidesPerSecond > 1) {
                                 // ====== Slice twice action =======

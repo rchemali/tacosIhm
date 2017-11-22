@@ -59,12 +59,12 @@ public class VoiceService extends Service implements
     /* Named searches allow to quickly reconfigure the decoder */
     private static final String KWS_SEARCH = "nextstep";
     private static final String KWS_SEARCH2 = "preview";
-    private static final String KWS_SEARCH3 = "finish";
+    private static final String KWS_SEARCH3 = "ok";
 
     /* Keyword we are looking for to activate menu */
     private static final String KEYPHRASE = "next step";
     private static final String KEYPHRASE2 = "preview step";
-    private static final String KEYPHRASE3 = "finish";
+    private static final String KEYPHRASE3 = "ok google";
 
 
 
@@ -143,26 +143,27 @@ public class VoiceService extends Service implements
      */
     @Override
     public void onPartialResult(Hypothesis hypothesis) {
+
         if (hypothesis == null)
             return;
 
         String text = hypothesis.getHypstr();
 
         if (text.equalsIgnoreCase(KEYPHRASE)) {
-            Toast.makeText(this, "onPartialResult text=" + text, Toast.LENGTH_SHORT).show();
             switchSearch(KWS_SEARCH);
             sendBroadcast(text);
         }
         else if(text.equalsIgnoreCase(KEYPHRASE2)){
-            Toast.makeText(this, "onPartialResult text2=" + text, Toast.LENGTH_SHORT).show();
             switchSearch(KWS_SEARCH2);
             sendBroadcast(text);
         }
 
         else if(text.equalsIgnoreCase(KEYPHRASE3)){
-            Toast.makeText(this, "onPartialResult text3=" + text, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),text,Toast.LENGTH_LONG).show();
             switchSearch(KWS_SEARCH3);
             sendBroadcast(text);
+        }else{
+
         }
 
         Log.i(LOG_TAG, "onPartialResult text=" +text);
@@ -190,6 +191,7 @@ public class VoiceService extends Service implements
      */
     @Override
     public void onEndOfSpeech() {
+
         if (!recognizer.getSearchName().equalsIgnoreCase(KWS_SEARCH))
             switchSearch(KWS_SEARCH);
 
@@ -208,8 +210,18 @@ public class VoiceService extends Service implements
         Log.i(LOG_TAG, "switchSearch searchName = " + searchName);
         recognizer.stop();
 
+        if (searchName.equals(KWS_SEARCH))
+            recognizer.startListening(searchName);
+        else if(searchName.equals(KWS_SEARCH2)){
+            recognizer.startListening(searchName);
+        } else if (searchName.equals(KWS_SEARCH3)) {
+            recognizer.startListening(searchName);
+        } else {
+        }
+            recognizer.startListening(searchName, 10000);
+
         // If we are not spotting, start listening with timeout (10000 ms or 10 seconds).
-        recognizer.startListening(searchName, 10000);
+        //recognizer.startListening(searchName, 7000);
     }
 
     private void setupRecognizer(File assetsDir) throws IOException {
@@ -224,9 +236,10 @@ public class VoiceService extends Service implements
                 .setKeywordThreshold(1e-45f) // Threshold to tune for keyphrase to balance between false alarms and misses
                 .setBoolean("-allphone_ci", true)  // Use context-independent phonetic search, context-dependent is too slow for mobile
 
-
                 .getRecognizer();
         recognizer.addListener(this);
+
+
 
         /** In your application you might not need to add all those searches.
          * They are added here for demonstration. You can leave just one.
@@ -236,7 +249,7 @@ public class VoiceService extends Service implements
         recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
         recognizer.addKeyphraseSearch(KWS_SEARCH2, KEYPHRASE2);
         recognizer.addKeyphraseSearch(KWS_SEARCH3, KEYPHRASE3);
-        recognizer.addGrammarSearch("command",new File(assetsDir,"command.gram"));
+       // recognizer.addGrammarSearch("command",new File(assetsDir,"command.gram"));
 
     }
 

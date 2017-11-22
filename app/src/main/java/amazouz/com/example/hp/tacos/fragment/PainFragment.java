@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -29,6 +30,7 @@ public class PainFragment extends Fragment{
     private TextView tx;
     private ImageView iv;
 
+    public fragmentexchange fragmentexchange = null;
 
     private String pain="";
     public static String choix(int a){
@@ -78,7 +80,6 @@ public void click(BroadcastReceiver activityReceiver){
     Intent toy=new Intent(getContext(),ViandeActivity.class);
     toy.putExtra("pain",pain);
     startActivity(toy);
-    getActivity().unregisterReceiver(activityReceiver);
 
 }
 
@@ -95,10 +96,10 @@ public void click(BroadcastReceiver activityReceiver){
 
         but1=(LinearLayout) view.findViewById(R.id.butt1);
 
-        //tx=(TextView)view.findViewById(R.id.txtv) ;
+        tx=(TextView)view.findViewById(R.id.txtv) ;
         iv=(ImageView)view.findViewById(R.id.imageView);
         choiximg(iv,pain);
-        //tx.setText(pain);
+        tx.setText(pain);
         but1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,10 +107,23 @@ public void click(BroadcastReceiver activityReceiver){
                 Intent toy=new Intent(getContext(),ViandeActivity.class);
                 toy.putExtra("pain",pain);
                 startActivity(toy);
+
+                if (fragmentexchange != null) {
+
+                    Toast.makeText(getActivity(),"ok",Toast.LENGTH_LONG).show();
+                    fragmentexchange.onclick();
+
+                }
             }
         });
 
         return view ;
+    }
+
+    public interface fragmentexchange{
+
+        public void onclick();
+
     }
 
 }
