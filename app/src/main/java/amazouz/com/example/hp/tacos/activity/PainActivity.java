@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.Date;
@@ -72,13 +73,20 @@ public class PainActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     TextToSpeech t1 ;
 
+    LinearLayout linearimages ;
+    private int dotscount;
+    private ImageView[] dots;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+      //  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+       // setSupportActionBar(toolbar);
+
+        linearimages = (LinearLayout)findViewById(R.id.imagecontenair);
 
         t1 = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -179,7 +187,149 @@ public class PainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
+
+
+        dotscount=mSectionsPagerAdapter.getCount();
+        dots=new ImageView[dotscount];
+        for(int i=0;i<dotscount;i++){
+            dots[i]=new ImageView(this);
+            switch(i){
+                case 0:
+
+                {
+                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
+
+                    break ;}
+                case 1:
+                {
+                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.simple));
+
+                    break;}
+                case 2:
+                {
+                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.doublee));
+
+                    break;}
+                case 3:
+
+                {
+                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.maxi));
+
+                    break;}
+                case 4:
+                {
+                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mega));
+
+                    break;}
+
+            }
+
+            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(4,0,4,0);
+            linearimages.addView(dots[i],params);
+            dots[i].getLayoutParams().height=150;
+            dots[i].getLayoutParams().width=150;
+
+
+        }
+       dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
+      dots[0].getLayoutParams().height=250;
+       dots[0].getLayoutParams().width=250;
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+            @Override
+            public void onPageSelected(int position) {
+                for(int i =0;i<dotscount;i++){
+                     //dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
+                    switch(i){
+                        case 0:
+
+                        {       dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
+                            dots[i].getLayoutParams().height=150;
+                            dots[i].getLayoutParams().width=150;
+
+                            break ;}
+                        case 1:
+                        {        dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.simple));
+                            dots[i].getLayoutParams().height=150;
+                            dots[i].getLayoutParams().width=150;
+                            break;}
+                        case 2:
+                        {  dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.doublee));
+                            dots[i].getLayoutParams().height=150;
+                            dots[i].getLayoutParams().width=150;
+                            break;}
+                        case 3:
+
+                        {   dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.maxi));
+                            dots[i].getLayoutParams().height=150;
+                            dots[i].getLayoutParams().width=150;
+                            break;}
+                        case 4:
+                        {   dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mega));
+                            dots[i].getLayoutParams().height=150;
+                            dots[i].getLayoutParams().width=150;
+                            break;
+                        }
+
+                    }
+
+                }
+                //dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini+position+'1'));
+                switch(position){
+                    case 0:
+
+                    {       dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
+                        dots[position].getLayoutParams().height=250;
+                        dots[position].getLayoutParams().width=250;
+
+                        break ;}
+                    case 1:
+                    {        dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.simple));
+                        dots[position].getLayoutParams().height=250;
+                        dots[position].getLayoutParams().width=250;
+                        break;}
+                    case 2:
+                    {  dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.doublee));
+                        dots[position].getLayoutParams().height=250;
+                        dots[position].getLayoutParams().width=250;
+                        break;}
+                    case 3:
+
+                    {   dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.maxi));
+                        dots[position].getLayoutParams().height=250;
+                        dots[position].getLayoutParams().width=250;
+                        break;}
+                    case 4:
+                    {   dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mega));
+                        dots[position].getLayoutParams().height=250;
+                        dots[position].getLayoutParams().width=250;
+                        break;}
+
+                }
+
+
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+
+
+
+
+
+
+
+
+}
 
 
     @Override
