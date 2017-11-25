@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import amazouz.com.example.hp.tacos.R;
 import amazouz.com.example.hp.tacos.model.Commande;
 
@@ -19,6 +21,12 @@ public class CommandActivity extends AppCompatActivity {
     private ImageView iv2;
     private ImageView iv3;
     private ImageView iv4;
+
+    TextView txtMenu1;
+    TextView txtMenu2;
+    TextView txtMenu3;
+    TextView txtMenu4;
+
     private static void recap(Commande c, ImageView iv1,ImageView iv2,ImageView iv3,ImageView iv4){
         switch(c.getPain()){
 
@@ -102,31 +110,33 @@ public class CommandActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main5);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
         Intent iin= getIntent();
         Bundle b = iin.getExtras();
 
         if(b!=null)
-        { c=new Commande((String) b.get("pain"),(String) b.get("sauce"),(String) b.get("viande"),(String) b.get("boisson"));
+        {
 
+            c=new Commande((String) b.get("pain"),(String) b.get("sauce"),(String) b.get("viande"),(String) b.get("boisson"));
 
         }
-        iv1=(ImageView)findViewById(R.id.imageView4);
-        iv2=(ImageView)findViewById(R.id.imageView5);
-        iv3=(ImageView)findViewById(R.id.imageView2);
-        iv4=(ImageView)findViewById(R.id.imageView3);
-        TextView tv=(TextView)findViewById(R.id.textView2);
-        tv.setTextSize(15);
-        tv.setText(tv.getText()+" "+c.getPain()+" "+c.getViande()+" "+c.getSauce()+" "+c.getBoisson());
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action ", null).show();
-            }
-        });
+
+        iv1=(ImageView)findViewById(R.id.imageView1);
+        iv2=(ImageView)findViewById(R.id.imageView2);
+        iv3=(ImageView)findViewById(R.id.imageView3);
+        iv4=(ImageView)findViewById(R.id.imageView4);
+
+        txtMenu1 = (TextView)findViewById(R.id.text1) ;
+        txtMenu2 = (TextView)findViewById(R.id.text2) ;
+        txtMenu3 = (TextView)findViewById(R.id.text3) ;
+        txtMenu4 = (TextView)findViewById(R.id.text4) ;
+
+        txtMenu1.setText(c.getPain());
+        txtMenu2.setText(c.getViande());
+        txtMenu3.setText(c.getSauce());
+        txtMenu4.setText(c.getBoisson());
+
+
         recap(c,iv1,iv2,iv3,iv4);
 
     }

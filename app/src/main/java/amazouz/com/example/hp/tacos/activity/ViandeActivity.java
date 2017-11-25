@@ -68,6 +68,8 @@ public class ViandeActivity extends AppCompatActivity {
     TextToSpeech t1 ;
     private String pain;
 
+    ImageView imagePoulet , imageMerguez , imageEscalope , imageCordon, imagehache ;
+
     public String getPain() {
         return pain;
     }
@@ -84,13 +86,19 @@ public class ViandeActivity extends AppCompatActivity {
             pain =(String) b.get("pain");
 
         }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        imagePoulet = (ImageView)findViewById(R.id.poulet);
+        imageMerguez = (ImageView)findViewById(R.id.merguez);
+        imageEscalope = (ImageView)findViewById(R.id.escalope);
+        imageCordon = (ImageView)findViewById(R.id.cordon);
+        imagehache = (ImageView)findViewById(R.id.hache);
+
 
         t1 = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -98,6 +106,7 @@ public class ViandeActivity extends AppCompatActivity {
                 speakOut("Menu viande");
             }
         });
+
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
@@ -126,6 +135,7 @@ public class ViandeActivity extends AppCompatActivity {
                         pg=pg + 1;
                         mViewPager.setCurrentItem(pg);
                         speechChoice(pg);
+                        changeBackgroundImage(pg);
 
                     }
 
@@ -137,6 +147,7 @@ public class ViandeActivity extends AppCompatActivity {
                         pg=pg-1;
                         mViewPager.setCurrentItem(pg);
                         speechChoice(pg);
+                        changeBackgroundImage(pg);
 
                     }
 
@@ -168,6 +179,7 @@ public class ViandeActivity extends AppCompatActivity {
                     pg=pg-1;
                     mViewPager.setCurrentItem(pg);
                     speechChoice(pg);
+                    changeBackgroundImage(pg);
 
                 }
             }
@@ -182,6 +194,7 @@ public class ViandeActivity extends AppCompatActivity {
                     pg=pg + 1;
                     mViewPager.setCurrentItem(pg);
                     speechChoice(pg);
+                    changeBackgroundImage(pg);
 
                 }
             }
@@ -218,6 +231,63 @@ public class ViandeActivity extends AppCompatActivity {
             case 4:
                 speakOut("Viande haché");
                 break;
+        }
+
+    }
+
+    public void changeBackgroundImage(int position){
+
+        switch (position){
+
+            case 0:
+
+                imagePoulet.setAlpha((float) 1.0);
+                imageMerguez.setAlpha((float) 0.5);
+                imageEscalope.setAlpha((float) 0.5);
+                imageCordon.setAlpha((float) 0.5);
+                imagehache.setAlpha((float) 0.5);
+
+
+                break;
+
+            case 1:
+
+                imagePoulet.setAlpha((float) 0.5);
+                imageMerguez.setAlpha((float) 1.0);
+                imageEscalope.setAlpha((float) 0.5);
+                imageCordon.setAlpha((float) 0.5);
+                imagehache.setAlpha((float) 0.5);
+                break;
+
+            case 2:
+
+                imagePoulet.setAlpha((float) 0.5);
+                imageMerguez.setAlpha((float) 0.5);
+                imageEscalope.setAlpha((float) 1.0);
+                imageCordon.setAlpha((float) 0.5);
+                imagehache.setAlpha((float) 0.5);
+
+                break;
+
+            case 3:
+                imagePoulet.setAlpha((float) 0.5);
+                imageMerguez.setAlpha((float) 0.5);
+                imageEscalope.setAlpha((float)0.5);
+                imageCordon.setAlpha((float) 1.0);
+                imagehache.setAlpha((float) 0.5);
+
+                break;
+
+            case 4:
+                imagePoulet.setAlpha((float) 1.0);
+                imageMerguez.setAlpha((float) 0.5);
+                imageEscalope.setAlpha((float) 0.5);
+                imageCordon.setAlpha((float) 0.5);
+                imagehache.setAlpha((float) 1.0);
+
+
+                break;
+
         }
 
     }
@@ -274,6 +344,8 @@ public class ViandeActivity extends AppCompatActivity {
                                     pg=pg-1;
                                     mViewPager.setCurrentItem(pg); // rak dayro hna !!! att atla3lfou9kamel
                                     speechChoice(pg);
+                                    changeBackgroundImage(pg);
+
                                 }
 
                             } else {
@@ -283,6 +355,7 @@ public class ViandeActivity extends AppCompatActivity {
                                     pg=pg + 1;
                                     mViewPager.setCurrentItem(pg);
                                     speechChoice(pg);
+                                    changeBackgroundImage(pg);
 
                                 }
                             }
@@ -383,8 +456,12 @@ public class ViandeActivity extends AppCompatActivity {
             viande.fragmentexchange = new ViandeFragment.fragmentexchange() {
                 @Override
                 public void onclick() {
-                    unregisterReceiver(activityReceiver);
-                    mSensorManager.unregisterListener(proximitySensorEventListener);
+                    try{
+                        unregisterReceiver(activityReceiver);
+                        mSensorManager.unregisterListener(proximitySensorEventListener);
+                    }catch (Exception e){
+
+                    }
                 }
             };
 
@@ -417,5 +494,9 @@ public class ViandeActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        mSensorManager.unregisterListener(proximitySensorEventListener);
+        super.onBackPressed();
+    }
 }

@@ -22,9 +22,9 @@
     </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="0.4">
+            android:layout_weight="0.3">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -38,6 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1.7"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
@@ -50,6 +52,7 @@
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/container"
+                android:layout_marginTop="7dp"
                 android:layout_width="254dp"
                 android:layout_height="wrap_content"
                 app:layout_anchor="@+id/fab"
@@ -72,11 +75,59 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.7"
+        android:adjustViewBounds="true"
         android:gravity="center"
         android:layout_gravity="center"
         android:id="@+id/imagecontenair"
          android:orientation="horizontal"
         >
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/mini"
+            android:src="@drawable/mini"
+            android:scaleType="fitXY"/>
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/simple"
+            android:src="@drawable/simple"
+            android:alpha="0.5"
+            android:scaleType="fitXY"/>
+
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/Sdouble"
+            android:src="@drawable/doublee"
+            android:alpha="0.5"
+            android:scaleType="fitXY"/>
+
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/maxi"
+            android:src="@drawable/maxi"
+            android:alpha="0.5"
+            android:scaleType="fitXY"/>
+
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/mega"
+            android:src="@drawable/mega"
+            android:alpha="0.5"
+            android:scaleType="fitXY"/>
+
+
+
+
+
     </LinearLayout>
 
 

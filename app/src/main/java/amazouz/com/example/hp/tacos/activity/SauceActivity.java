@@ -63,6 +63,9 @@ public class SauceActivity extends AppCompatActivity {
     String voiceCommand = "";
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     TextToSpeech t1 ;
+
+    ImageView imageAlg , imageKet , imageMay , imageChz, imageHar ;
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -82,8 +85,14 @@ public class SauceActivity extends AppCompatActivity {
             viande=(String) b.get("viande");
 
         }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+
+        imageAlg = (ImageView)findViewById(R.id.algerienne);
+        imageKet = (ImageView)findViewById(R.id.ketchup);
+        imageMay = (ImageView)findViewById(R.id.mayenaise);
+        imageChz = (ImageView)findViewById(R.id.cheezy);
+        imageHar = (ImageView)findViewById(R.id.harissa);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -124,6 +133,7 @@ public class SauceActivity extends AppCompatActivity {
                         pg=pg + 1;
                         mViewPager.setCurrentItem(pg);
                         speechChoice(pg);
+                        changeBackgroundImage(pg);
 
                     }
 
@@ -135,6 +145,7 @@ public class SauceActivity extends AppCompatActivity {
                         pg=pg-1;
                         mViewPager.setCurrentItem(pg);
                         speechChoice(pg);
+                        changeBackgroundImage(pg);
 
                     }
 
@@ -166,6 +177,7 @@ public class SauceActivity extends AppCompatActivity {
                     pg=pg-1;
                     mViewPager.setCurrentItem(pg);
                     speechChoice(pg);
+                    changeBackgroundImage(pg);
 
                 }
             }
@@ -180,6 +192,7 @@ public class SauceActivity extends AppCompatActivity {
                     pg=pg + 1;
                     mViewPager.setCurrentItem(pg);
                     speechChoice(pg);
+                    changeBackgroundImage(pg);
 
                 }
             }
@@ -272,6 +285,7 @@ public class SauceActivity extends AppCompatActivity {
                                     pg=pg-1;
                                     mViewPager.setCurrentItem(pg); // rak dayro hna !!! att atla3lfou9kamel
                                     speechChoice(pg);
+                                    changeBackgroundImage(pg);
                                 }
 
                             } else {
@@ -281,6 +295,8 @@ public class SauceActivity extends AppCompatActivity {
                                     pg=pg + 1;
                                     mViewPager.setCurrentItem(pg);
                                     speechChoice(pg);
+                                    changeBackgroundImage(pg);
+
 
                                 }
                             }
@@ -299,6 +315,67 @@ public class SauceActivity extends AppCompatActivity {
             }
         }
     };
+
+    public void changeBackgroundImage(int position){
+
+        switch (position){
+
+            case 0:
+
+                imageAlg.setAlpha((float) 1.0);
+                imageKet.setAlpha((float) 0.5);
+                imageMay.setAlpha((float) 0.5);
+                imageChz.setAlpha((float) 0.5);
+                imageHar.setAlpha((float) 0.5);
+
+                break;
+
+            case 1:
+
+                imageAlg.setAlpha((float) 0.5);
+                imageKet.setAlpha((float)  1.0);
+                imageMay.setAlpha((float) 0.5);
+                imageChz.setAlpha((float) 0.5);
+                imageHar.setAlpha((float) 0.5);
+
+                break;
+
+            case 2:
+
+                imageAlg.setAlpha((float) 0.5);
+                imageKet.setAlpha((float) 0.5);
+                imageMay.setAlpha((float)  1.0);
+                imageChz.setAlpha((float) 0.5);
+                imageHar.setAlpha((float) 0.5);
+
+                break;
+
+            case 3:
+
+                imageAlg.setAlpha((float) 0.5);
+                imageKet.setAlpha((float) 0.5);
+                imageMay.setAlpha((float) 0.5);
+                imageChz.setAlpha((float) 1.0);
+                imageHar.setAlpha((float)  0.5);
+
+                break;
+
+            case 4:
+
+                imageAlg.setAlpha((float) 0.5);
+                imageKet.setAlpha((float) 0.5);
+                imageMay.setAlpha((float) 0.5);
+                imageChz.setAlpha((float) 0.5);
+                imageHar.setAlpha((float)  1.0);
+
+
+                break;
+
+
+        }
+
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -376,8 +453,12 @@ public class SauceActivity extends AppCompatActivity {
             sauce.fragmentexchange = new SauceFragment.fragmentexchange() {
                 @Override
                 public void onclick() {
-                    unregisterReceiver(activityReceiver);
-                    mSensorManager.unregisterListener(proximitySensorEventListener);
+                    try{
+                        unregisterReceiver(activityReceiver);
+                        mSensorManager.unregisterListener(proximitySensorEventListener);
+                    }catch (Exception e){
+
+                    }
                 }
             };
 

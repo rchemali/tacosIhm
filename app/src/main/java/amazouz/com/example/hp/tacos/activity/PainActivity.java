@@ -10,6 +10,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.icu.text.UnicodeSetSpanner;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -32,8 +33,12 @@ import android.view.ViewGroup;
 
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -67,15 +72,20 @@ public class PainActivity extends AppCompatActivity {
     private int pg=0;
     private ImageView gauche;
     private ImageView droite;
+
     private static final String ACTION_STRING_ACTIVITY = "ToActivity";
     BroadcastReceiver activityReceiver;
+
     String voiceCommand = "";
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     TextToSpeech t1 ;
 
     LinearLayout linearimages ;
+
     private int dotscount;
     private ImageView[] dots;
+
+    ImageView imageMini , imageDouble , imageSimple , imageMaxi, imageMega ;
 
 
     @Override
@@ -87,6 +97,14 @@ public class PainActivity extends AppCompatActivity {
        // setSupportActionBar(toolbar);
 
         linearimages = (LinearLayout)findViewById(R.id.imagecontenair);
+
+
+        imageMini = (ImageView)findViewById(R.id.mini);
+        imageDouble = (ImageView)findViewById(R.id.Sdouble);
+        imageSimple = (ImageView)findViewById(R.id.simple);
+        imageMaxi = (ImageView)findViewById(R.id.maxi);
+        imageMega = (ImageView)findViewById(R.id.mega);
+
 
         t1 = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -128,6 +146,7 @@ public class PainActivity extends AppCompatActivity {
                         pg=pg + 1;
                         mViewPager.setCurrentItem(pg);
                         speechChoice(pg);
+                        changeBackgroundImage(pg);
 
                     }
 
@@ -139,6 +158,8 @@ public class PainActivity extends AppCompatActivity {
                         pg=pg-1;
                         mViewPager.setCurrentItem(pg);
                         speechChoice(pg);
+                        changeBackgroundImage(pg);
+
 
                     }
 
@@ -170,6 +191,9 @@ public class PainActivity extends AppCompatActivity {
                     pg=pg-1;
                 mViewPager.setCurrentItem(pg);
                     speechChoice(pg);
+                    Toast.makeText(getApplicationContext(),String.valueOf(pg),Toast.LENGTH_LONG).show();
+                    changeBackgroundImage(pg);
+
 
                 }
             }
@@ -183,156 +207,20 @@ public class PainActivity extends AppCompatActivity {
                         pg=pg + 1;
                     mViewPager.setCurrentItem(pg);
                     speechChoice(pg);
+                    Toast.makeText(getApplicationContext(),String.valueOf(pg),Toast.LENGTH_LONG).show();
+                    changeBackgroundImage(pg);
 
                 }
             }
         });
 
 
-        dotscount=mSectionsPagerAdapter.getCount();
-        dots=new ImageView[dotscount];
-        for(int i=0;i<dotscount;i++){
-            dots[i]=new ImageView(this);
-            switch(i){
-                case 0:
-
-                {
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
-
-                    break ;}
-                case 1:
-                {
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.simple));
-
-                    break;}
-                case 2:
-                {
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.doublee));
-
-                    break;}
-                case 3:
-
-                {
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.maxi));
-
-                    break;}
-                case 4:
-                {
-                    dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mega));
-
-                    break;}
-
-            }
-
-            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(4,0,4,0);
-            linearimages.addView(dots[i],params);
-            dots[i].getLayoutParams().height=150;
-            dots[i].getLayoutParams().width=150;
-
-
-        }
-      // dots[0].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
-     // dots[0].getLayoutParams().height=250;
-     //  dots[0].getLayoutParams().width=250;
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-            @Override
-            public void onPageSelected(int position) {
-                for(int i =0;i<dotscount;i++){
-                     //dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
-                    switch(i){
-                        case 0:
-
-                        {       dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
-                            dots[i].getLayoutParams().height=150;
-                            dots[i].getLayoutParams().width=150;
-
-                            break ;}
-                        case 1:
-                        {       dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
-                            dots[i].getLayoutParams().height=250;
-                            dots[i].getLayoutParams().width=250;
-                            break;}
-                        case 2:
-                        {  dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
-                            dots[i].getLayoutParams().height=150;
-                            dots[i].getLayoutParams().width=150;
-                            break;}
-                        case 3:
-
-                        {   dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
-                            dots[i].getLayoutParams().height=150;
-                            dots[i].getLayoutParams().width=150;
-                            break;}
-                        case 4:
-                        {  dots[i].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
-                            dots[i].getLayoutParams().height=150;
-                            dots[i].getLayoutParams().width=150;
-                            break;
-                        }
-
-                    }
-
-                }
-                //dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini+position+'1'));
-                //dots[position].getLayoutParams().height=250;
-               // dots[position].getLayoutParams().width=250;
-               /* switch(position){
-                    case 0:
-
-                    {       dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mini));
-                        dots[position].getLayoutParams().height=250;
-                        dots[position].getLayoutParams().width=250;
-
-                        break ;}
-                    case 1:
-                    {        dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.simple));
-                        dots[position].getLayoutParams().height=250;
-                        dots[position].getLayoutParams().width=250;
-                        break;}
-                    case 2:
-                    {  dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.doublee));
-                        dots[position].getLayoutParams().height=250;
-                        dots[position].getLayoutParams().width=250;
-                        break;}
-                    case 3:
-
-                    {   dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.maxi));
-                        dots[position].getLayoutParams().height=250;
-                        dots[position].getLayoutParams().width=250;
-                        break;}
-                    case 4:
-                    {   dots[position].setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),R.drawable.mega));
-                        dots[position].getLayoutParams().height=250;
-                        dots[position].getLayoutParams().width=250;
-                        break;}
-
-                }*/
-
-
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
 
 
 
 
 
-
-
-
-
-}
-
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -406,15 +294,19 @@ public class PainActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
            // return PlaceholderFragment.newInstance(position + 1);
+
             pain=new PainFragment();
 
             pain.fragmentexchange = new PainFragment.fragmentexchange() {
                 @Override
                 public void onclick() {
 
-                    unregisterReceiver(activityReceiver);
-                    mSensorManager.unregisterListener(proximitySensorEventListener);  // new add
+                    try{
+                        unregisterReceiver(activityReceiver);
+                        mSensorManager.unregisterListener(proximitySensorEventListener);
+                    }catch (Exception e){
 
+                    }
 
                 }
             };
@@ -474,7 +366,6 @@ public class PainActivity extends AppCompatActivity {
                 speakOut("Le Mini");
                 break;
 
-
             case 1:
                 speakOut("Le Simple");
                 break;
@@ -493,6 +384,68 @@ public class PainActivity extends AppCompatActivity {
         }
 
     }
+
+    public void changeBackgroundImage(int position){
+
+        switch (position){
+
+            case 0:
+
+                imageMini.setAlpha((float) 1.0);
+                imageSimple.setAlpha((float) 0.5);
+                imageDouble.setAlpha((float) 0.5);
+                imageMaxi.setAlpha((float) 0.5);
+                imageMega.setAlpha((float) 0.5);
+
+
+                break;
+
+            case 1:
+
+                imageMini.setAlpha((float) 0.5);
+                imageSimple.setAlpha((float) 1.0);
+                imageDouble.setAlpha((float) 0.5);
+                imageMaxi.setAlpha((float) 0.5);
+                imageMega.setAlpha((float) 0.5);
+
+                break;
+
+            case 2:
+
+                imageMini.setAlpha((float) 0.5);
+                imageSimple.setAlpha((float) 0.5);
+                imageDouble.setAlpha((float) 1.0);
+                imageMaxi.setAlpha((float) 0.5);
+                imageMega.setAlpha((float) 0.5);
+
+                break;
+
+            case 3:
+                imageMini.setAlpha((float) 0.5);
+                imageDouble.setAlpha((float) 0.5);
+                imageSimple.setAlpha((float) 0.5);
+                imageMaxi.setAlpha((float) 1.0);
+                imageMega.setAlpha((float) 0.5);
+
+                break;
+
+            case 4:
+                imageMini.setAlpha((float) 0.5);
+                imageDouble.setAlpha((float) 0.5);
+                imageSimple.setAlpha((float) 0.5);
+                imageMaxi.setAlpha((float) 0.5);
+                imageMega.setAlpha((float) 1.0);
+
+
+                break;
+
+
+        }
+
+
+    }
+
+
 
     SensorEventListener proximitySensorEventListener = new SensorEventListener() {
 
@@ -541,6 +494,7 @@ public class PainActivity extends AppCompatActivity {
                                     pg=pg-1;
                                     mViewPager.setCurrentItem(pg); // rak dayro hna !!! att atla3lfou9kamel
                                     speechChoice(pg);
+                                    changeBackgroundImage(pg);
                                 }
 
                             } else {
@@ -550,6 +504,7 @@ public class PainActivity extends AppCompatActivity {
                                     pg=pg + 1;
                                     mViewPager.setCurrentItem(pg);
                                     speechChoice(pg);
+                                    changeBackgroundImage(pg);
 
                                 }
                             }
@@ -570,7 +525,6 @@ public class PainActivity extends AppCompatActivity {
             }
 
         }
-
 
     };
 }

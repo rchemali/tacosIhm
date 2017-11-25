@@ -60,6 +60,7 @@ public class DrinkActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     TextToSpeech t1 ;
 
+    ImageView imageCoca , imageOasis , imageCherry , imageSeven ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,15 +75,22 @@ public class DrinkActivity extends AppCompatActivity {
             sauce=(String) b.get("sauce");
             viande=(String) b.get("viande");
         }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
+
+
+        imageCoca= (ImageView)findViewById(R.id.coca);
+        imageOasis = (ImageView)findViewById(R.id.oasis);
+        imageCherry = (ImageView)findViewById(R.id.cocacherry);
+        imageSeven = (ImageView)findViewById(R.id.sevenup);
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
 
         t1 = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -116,6 +124,7 @@ public class DrinkActivity extends AppCompatActivity {
                         pg=pg + 1;
                         mViewPager.setCurrentItem(pg);
                         speechChoice(pg);
+                        changeBackgroundImage(pg);
 
                     }
 
@@ -127,6 +136,7 @@ public class DrinkActivity extends AppCompatActivity {
                         pg=pg-1;
                         mViewPager.setCurrentItem(pg);
                         speechChoice(pg);
+                        changeBackgroundImage(pg);
 
                     }
 
@@ -158,6 +168,7 @@ public class DrinkActivity extends AppCompatActivity {
                     pg=pg-1;
                     mViewPager.setCurrentItem(pg);
                     speechChoice(pg);
+                    changeBackgroundImage(pg);
 
                 }
             }
@@ -172,6 +183,7 @@ public class DrinkActivity extends AppCompatActivity {
                     pg=pg + 1;
                     mViewPager.setCurrentItem(pg);
                     speechChoice(pg);
+                    changeBackgroundImage(pg);
 
                 }
             }
@@ -204,6 +216,51 @@ public class DrinkActivity extends AppCompatActivity {
             case 3:
                 speakOut("Seven up");
                 break;
+
+        }
+
+    }
+
+
+    public void changeBackgroundImage(int position){
+
+        switch (position){
+
+            case 0:
+
+                imageCoca.setAlpha((float) 1.0);
+                imageOasis.setAlpha((float) 0.5);
+                imageCherry.setAlpha((float) 0.5);
+                imageSeven.setAlpha((float) 0.5);
+
+                break;
+
+            case 1:
+
+                imageCoca.setAlpha((float)  0.5);
+                imageOasis.setAlpha((float)  1.0);
+                imageCherry.setAlpha((float) 0.5);
+                imageSeven.setAlpha((float) 0.5);
+
+                break;
+
+            case 2:
+
+                imageCoca.setAlpha((float)  0.5);
+                imageOasis.setAlpha((float) 0.5);
+                imageCherry.setAlpha((float)  1.0);
+                imageSeven.setAlpha((float) 0.5);
+
+                break;
+
+            case 3:
+
+                imageCoca.setAlpha((float)  0.5);
+                imageOasis.setAlpha((float) 0.5);
+                imageCherry.setAlpha((float) 0.5);
+                imageSeven.setAlpha((float)  1.0);
+                break;
+
 
         }
 
@@ -258,6 +315,8 @@ public class DrinkActivity extends AppCompatActivity {
                                     pg=pg-1;
                                     mViewPager.setCurrentItem(pg); // rak dayro hna !!! att atla3lfou9kamel
                                     speechChoice(pg);
+                                    changeBackgroundImage(pg);
+
                                 }
 
                             } else {
@@ -267,6 +326,8 @@ public class DrinkActivity extends AppCompatActivity {
                                     pg=pg + 1;
                                     mViewPager.setCurrentItem(pg);
                                     speechChoice(pg);
+                                    changeBackgroundImage(pg);
+
 
                                 }
                             }
@@ -362,8 +423,13 @@ public class DrinkActivity extends AppCompatActivity {
             boisson.fragmentexchange = new BoissonFragment.fragmentexchange() {
                 @Override
                 public void onclick() {
-                    unregisterReceiver(activityReceiver);
-                    mSensorManager.unregisterListener(proximitySensorEventListener);
+                    try{
+                        unregisterReceiver(activityReceiver);
+                        mSensorManager.unregisterListener(proximitySensorEventListener);
+                    }catch (Exception e){
+
+                    }
+
                 }
             };
 
