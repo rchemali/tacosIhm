@@ -36,6 +36,7 @@ import amazouz.com.example.hp.tacos.R;
 import amazouz.com.example.hp.tacos.fragment.PainFragment;
 import amazouz.com.example.hp.tacos.fragment.ViandeFragment;
 import amazouz.com.example.hp.tacos.service.VoiceService;
+import amazouz.com.example.hp.tacos.util.Util;
 
 public class ViandeActivity extends AppCompatActivity {
 
@@ -58,10 +59,14 @@ public class ViandeActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
     private int pg=0;
+
     private ImageView gauche;
     private ImageView droite;
+
     private static final String ACTION_STRING_ACTIVITY = "ToActivity";
+
     BroadcastReceiver activityReceiver;
     String voiceCommand = "";
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
@@ -73,6 +78,9 @@ public class ViandeActivity extends AppCompatActivity {
     public String getPain() {
         return pain;
     }
+
+    ImageView btnsound ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,12 +106,36 @@ public class ViandeActivity extends AppCompatActivity {
         imageEscalope = (ImageView)findViewById(R.id.escalope);
         imageCordon = (ImageView)findViewById(R.id.cordon);
         imagehache = (ImageView)findViewById(R.id.hache);
+        btnsound = (ImageView) findViewById(R.id.sound);
 
 
         t1 = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 speakOut("Menu viande");
+            }
+        });
+
+        Toast.makeText(getApplicationContext(),String.valueOf(Util.getCurrentParams(getApplicationContext())),Toast.LENGTH_LONG).show();
+
+        initUi();
+
+        btnsound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(Util.getCurrentParams(getApplicationContext())){
+
+                    Util.paramsSound(getApplicationContext(),false);
+                    btnsound.setImageResource(R.drawable.off);
+
+                }else{
+
+                    Util.paramsSound(getApplicationContext(),true);
+                    btnsound.setImageResource(R.drawable.on);
+
+                }
+
             }
         });
 
@@ -204,10 +236,41 @@ public class ViandeActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onResume() {
+
+        if (activityReceiver != null) {
+
+            IntentFilter intentFilter = new IntentFilter(ACTION_STRING_ACTIVITY);
+            registerReceiver(activityReceiver, intentFilter);
+
+        }
+
+        if (mProximity != null) {
+            mSensorManager.registerListener(proximitySensorEventListener,
+                    mProximity,
+                    SensorManager.SENSOR_DELAY_NORMAL
+            );
+        }
+
+
+        super.onResume();
+    }
+
+
     private void speakOut(String voice) {
-        t1.speak(voice, TextToSpeech.QUEUE_FLUSH, null);
+        boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
+
+        if(soundIsActivate) {
+            t1.speak(voice, TextToSpeech.QUEUE_FLUSH, null);
+        }
     }
     public void speechChoice(int choice){
+
+        boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
+
+        if(soundIsActivate) {
 
         switch (choice){
 
@@ -231,6 +294,8 @@ public class ViandeActivity extends AppCompatActivity {
             case 4:
                 speakOut("Viande haché");
                 break;
+        }}else{
+
         }
 
     }
@@ -279,7 +344,7 @@ public class ViandeActivity extends AppCompatActivity {
                 break;
 
             case 4:
-                imagePoulet.setAlpha((float) 1.0);
+                imagePoulet.setAlpha((float) 0.5);
                 imageMerguez.setAlpha((float) 0.5);
                 imageEscalope.setAlpha((float) 0.5);
                 imageCordon.setAlpha((float) 0.5);
@@ -332,8 +397,18 @@ public class ViandeActivity extends AppCompatActivity {
 
                                 if(firstLaunch != false){
 
-                                    unregisterReceiver(activityReceiver);
-                                    mSensorManager.unregisterListener(proximitySensorEventListener);
+                                /*    viande.fragmentexchange = new ViandeFragment.fragmentexchange() {
+                                        @Override
+                                        public void onclick() {
+                                            try{
+                                                unregisterReceiver(activityReceiver);
+                                                mSensorManager.unregisterListener(proximitySensorEventListener);
+                                            }catch (Exception e){
+
+                                            }
+                                        }
+                                    }; */
+
 
                                 }
 
@@ -494,9 +569,28 @@ public class ViandeActivity extends AppCompatActivity {
         }
     }
 
+    public void initUi(){
+        boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
+
+        if(soundIsActivate) {
+
+            btnsound.setImageResource(R.drawable.on);
+
+        }else{
+
+            btnsound.setImageResource(R.drawable.off);
+
+
+        }
+
+    }
+
     @Override
     public void onBackPressed() {
+
+        unregisterReceiver(activityReceiver);
         mSensorManager.unregisterListener(proximitySensorEventListener);
+
         super.onBackPressed();
     }
 }

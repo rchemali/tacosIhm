@@ -34,6 +34,7 @@ import java.util.Date;
 
 import amazouz.com.example.hp.tacos.fragment.BoissonFragment;
 import amazouz.com.example.hp.tacos.R;
+import amazouz.com.example.hp.tacos.util.Util;
 
 public class DrinkActivity extends AppCompatActivity {
 
@@ -62,6 +63,8 @@ public class DrinkActivity extends AppCompatActivity {
 
     ImageView imageCoca , imageOasis , imageCherry , imageSeven ;
 
+    ImageView btnsound ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +87,29 @@ public class DrinkActivity extends AppCompatActivity {
         imageOasis = (ImageView)findViewById(R.id.oasis);
         imageCherry = (ImageView)findViewById(R.id.cocacherry);
         imageSeven = (ImageView)findViewById(R.id.sevenup);
+
+        btnsound = (ImageView) findViewById(R.id.sound);
+
+        initUi();
+
+        btnsound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(Util.getCurrentParams(getApplicationContext())){
+
+                    Util.paramsSound(getApplicationContext(),false);
+                    btnsound.setImageResource(R.drawable.off);
+
+                }else{
+
+                    Util.paramsSound(getApplicationContext(),true);
+                    btnsound.setImageResource(R.drawable.on);
+
+                }
+
+            }
+        });
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -194,9 +220,18 @@ public class DrinkActivity extends AppCompatActivity {
 
 
     private void speakOut(String voice) {
-        t1.speak(voice, TextToSpeech.QUEUE_FLUSH, null);
+        boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
+
+        if(soundIsActivate) {
+            t1.speak(voice, TextToSpeech.QUEUE_FLUSH, null);
+        }
     }
+
     public void speechChoice(int choice){
+
+        boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
+
+        if(soundIsActivate) {
 
         switch (choice){
 
@@ -216,6 +251,8 @@ public class DrinkActivity extends AppCompatActivity {
             case 3:
                 speakOut("Seven up");
                 break;
+
+        }}else{
 
         }
 
@@ -463,5 +500,50 @@ public class DrinkActivity extends AppCompatActivity {
             // Show 3 total pages.
             return 4;
         }
+    }
+    @Override
+    protected void onResume() {
+
+        if (activityReceiver != null) {
+
+            IntentFilter intentFilter = new IntentFilter(ACTION_STRING_ACTIVITY);
+            registerReceiver(activityReceiver, intentFilter);
+
+        }
+
+        if (mProximity != null) {
+            mSensorManager.registerListener(proximitySensorEventListener,
+                    mProximity,
+                    SensorManager.SENSOR_DELAY_NORMAL
+            );
+        }
+
+
+        super.onResume();
+    }
+
+    public void initUi(){
+        boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
+
+        if(soundIsActivate) {
+
+            btnsound.setImageResource(R.drawable.on);
+
+        }else{
+
+            btnsound.setImageResource(R.drawable.off);
+
+
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        unregisterReceiver(activityReceiver);
+        mSensorManager.unregisterListener(proximitySensorEventListener);
+
+        super.onBackPressed();
     }
 }

@@ -34,6 +34,7 @@ import java.util.Date;
 
 import amazouz.com.example.hp.tacos.R;
 import amazouz.com.example.hp.tacos.fragment.SauceFragment;
+import amazouz.com.example.hp.tacos.util.Util;
 
 public class SauceActivity extends AppCompatActivity {
 
@@ -72,6 +73,9 @@ public class SauceActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private String pain;
     private String viande;
+
+    ImageView btnsound ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +97,8 @@ public class SauceActivity extends AppCompatActivity {
         imageChz = (ImageView)findViewById(R.id.cheezy);
         imageHar = (ImageView)findViewById(R.id.harissa);
 
+        btnsound = (ImageView) findViewById(R.id.sound);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -105,6 +111,28 @@ public class SauceActivity extends AppCompatActivity {
             @Override
             public void onInit(int status) {
                 speakOut("Menu Sauce");
+            }
+        });
+
+        initUi();
+
+
+        btnsound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(Util.getCurrentParams(getApplicationContext())){
+
+                    Util.paramsSound(getApplicationContext(),false);
+                    btnsound.setImageResource(R.drawable.off);
+
+                }else{
+
+                    Util.paramsSound(getApplicationContext(),true);
+                    btnsound.setImageResource(R.drawable.on);
+
+                }
+
             }
         });
 
@@ -203,33 +231,46 @@ public class SauceActivity extends AppCompatActivity {
     }
 
     private void speakOut(String voice) {
-        t1.speak(voice, TextToSpeech.QUEUE_FLUSH, null);
+
+        boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
+
+        if(soundIsActivate) {
+            t1.speak(voice, TextToSpeech.QUEUE_FLUSH, null);
+        }
+
     }
 
     public void speechChoice(int choice){
 
-        switch (choice){
+        boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
 
-            case 0:
-                speakOut("Algérienne");
-                break;
+        if(soundIsActivate) {
+
+            switch (choice) {
+
+                case 0:
+                    speakOut("Algérienne");
+                    break;
 
 
-            case 1:
-                speakOut("Ketchup");
-                break;
+                case 1:
+                    speakOut("Ketchup");
+                    break;
 
-            case 2:
-                speakOut("Mayonaise");
-                break;
+                case 2:
+                    speakOut("Mayonaise");
+                    break;
 
-            case 3:
-                speakOut("Cheezy");
-                break;
+                case 3:
+                    speakOut("Cheezy");
+                    break;
 
-            case 4:
-                speakOut("Harissa");
-                break;
+                case 4:
+                    speakOut("Harissa");
+                    break;
+            }
+        }else{
+
         }
 
     }
@@ -489,5 +530,51 @@ public class SauceActivity extends AppCompatActivity {
             // Show 3 total pages.
             return 5;
         }
+    }
+
+    @Override
+    protected void onResume() {
+
+        if (activityReceiver != null) {
+
+            IntentFilter intentFilter = new IntentFilter(ACTION_STRING_ACTIVITY);
+            registerReceiver(activityReceiver, intentFilter);
+
+        }
+
+        if (mProximity != null) {
+            mSensorManager.registerListener(proximitySensorEventListener,
+                    mProximity,
+                    SensorManager.SENSOR_DELAY_NORMAL
+            );
+        }
+
+
+        super.onResume();
+    }
+
+    public void initUi(){
+        boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
+
+        if(soundIsActivate) {
+
+            btnsound.setImageResource(R.drawable.on);
+
+        }else{
+
+            btnsound.setImageResource(R.drawable.off);
+
+
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        unregisterReceiver(activityReceiver);
+        mSensorManager.unregisterListener(proximitySensorEventListener);
+
+        super.onBackPressed();
     }
 }

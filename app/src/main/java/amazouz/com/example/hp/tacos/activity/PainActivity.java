@@ -31,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -45,6 +46,8 @@ import java.util.Locale;
 import amazouz.com.example.hp.tacos.fragment.PainFragment;
 import amazouz.com.example.hp.tacos.R;
 import amazouz.com.example.hp.tacos.service.VoiceService;
+import amazouz.com.example.hp.tacos.util.Util;
+
 import android.speech.tts.TextToSpeech;
 
 
@@ -60,8 +63,10 @@ public class PainActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private PainFragment pain;
+
     private SensorManager mSensorManager;
     private Sensor mProximity;
+
     private Date date;
     private int startTime = 0, endTime = 0, numberOfSlidesPerSecond = 0;
     private boolean firstLaunch = false;
@@ -87,6 +92,10 @@ public class PainActivity extends AppCompatActivity {
 
     ImageView imageMini , imageDouble , imageSimple , imageMaxi, imageMega ;
 
+    ImageView btnsound ;
+
+    // mode son
+    int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +113,7 @@ public class PainActivity extends AppCompatActivity {
         imageSimple = (ImageView)findViewById(R.id.simple);
         imageMaxi = (ImageView)findViewById(R.id.maxi);
         imageMega = (ImageView)findViewById(R.id.mega);
+        btnsound = (ImageView) findViewById(R.id.sound);
 
 
         t1 = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
@@ -113,6 +123,29 @@ public class PainActivity extends AppCompatActivity {
             }
         });
 
+        // activate sound
+        Util.paramsSound(getApplicationContext(),true);
+
+        initUi();
+
+        btnsound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(Util.getCurrentParams(getApplicationContext())){
+
+                    Util.paramsSound(getApplicationContext(),false);
+                    btnsound.setImageResource(R.drawable.off);
+
+                }else{
+
+                    Util.paramsSound(getApplicationContext(),true);
+                    btnsound.setImageResource(R.drawable.on);
+
+                }
+
+            }
+        });
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -213,12 +246,6 @@ public class PainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
-
-
-
 
     }
 
@@ -360,27 +387,34 @@ public class PainActivity extends AppCompatActivity {
 
     public void speechChoice(int choice){
 
-        switch (choice){
+        boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
 
-            case 0:
-                speakOut("Le Mini");
-                break;
+        if(soundIsActivate) {
 
-            case 1:
-                speakOut("Le Simple");
-                break;
+            switch (choice) {
 
-            case 2:
-                speakOut("Le Double");
-                break;
+                case 0:
+                    speakOut("Le Mini");
+                    break;
 
-            case 3:
-                speakOut("Le Maxi");
-                break;
+                case 1:
+                    speakOut("Le Simple");
+                    break;
 
-            case 4:
-                speakOut("Le Méga");
-                break;
+                case 2:
+                    speakOut("Le Double");
+                    break;
+
+                case 3:
+                    speakOut("Le Maxi");
+                    break;
+
+                case 4:
+                    speakOut("Le Méga");
+                    break;
+            }
+        }else {
+
         }
 
     }
@@ -439,13 +473,10 @@ public class PainActivity extends AppCompatActivity {
 
                 break;
 
-
         }
 
 
     }
-
-
 
     SensorEventListener proximitySensorEventListener = new SensorEventListener() {
 
@@ -483,9 +514,8 @@ public class PainActivity extends AppCompatActivity {
                             if (endTime > startTime + 2) {
                                 // ====== Validate action ======
 
-                                if(firstLaunch != false)
-                                    pain.click(activityReceiver);
-                                  // mSensorManager.unregisterListener(proximitySensorEventListener);  // new add
+                     //           if(firstLaunch != false)
+
 
                             } else if (numberOfSlidesPerSecond > 1) {
                                 // ====== Slice twice action =======
@@ -527,4 +557,52 @@ public class PainActivity extends AppCompatActivity {
         }
 
     };
+
+    @Override
+    protected void onResume() {
+
+        if (activityReceiver != null) {
+
+            IntentFilter intentFilter = new IntentFilter(ACTION_STRING_ACTIVITY);
+            registerReceiver(activityReceiver, intentFilter);
+
+        }
+
+        if (mProximity != null) {
+            mSensorManager.registerListener(proximitySensorEventListener,
+                    mProximity,
+                    SensorManager.SENSOR_DELAY_NORMAL
+            );
+        }
+
+
+        super.onResume();
+    }
+
+    public void initUi(){
+        boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
+
+        if(soundIsActivate) {
+
+            btnsound.setImageResource(R.drawable.on);
+
+        }else{
+
+            btnsound.setImageResource(R.drawable.off);
+
+
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        try{
+            unregisterReceiver(activityReceiver);
+            mSensorManager.unregisterListener(proximitySensorEventListener);  // new add
+        }catch (Exception e){
+
+        }
+        super.onStop();
+    }
 }
