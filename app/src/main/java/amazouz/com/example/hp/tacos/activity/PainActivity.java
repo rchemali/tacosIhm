@@ -107,14 +107,12 @@ public class PainActivity extends AppCompatActivity {
 
         linearimages = (LinearLayout)findViewById(R.id.imagecontenair);
 
-
         imageMini = (ImageView)findViewById(R.id.mini);
         imageDouble = (ImageView)findViewById(R.id.Sdouble);
         imageSimple = (ImageView)findViewById(R.id.simple);
         imageMaxi = (ImageView)findViewById(R.id.maxi);
         imageMega = (ImageView)findViewById(R.id.mega);
         btnsound = (ImageView) findViewById(R.id.sound);
-
 
         t1 = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -470,11 +468,9 @@ public class PainActivity extends AppCompatActivity {
                 imageMaxi.setAlpha((float) 0.5);
                 imageMega.setAlpha((float) 1.0);
 
-
                 break;
 
         }
-
 
     }
 
@@ -514,7 +510,9 @@ public class PainActivity extends AppCompatActivity {
                             if (endTime > startTime + 2) {
                                 // ====== Validate action ======
 
-                     //           if(firstLaunch != false)
+                               if(firstLaunch != false){
+
+                               }
 
 
                             } else if (numberOfSlidesPerSecond > 1) {
@@ -549,11 +547,9 @@ public class PainActivity extends AppCompatActivity {
                         }
                     }, 1500);
 
-
                 }
 
             }
-
         }
 
     };
@@ -575,7 +571,6 @@ public class PainActivity extends AppCompatActivity {
             );
         }
 
-
         super.onResume();
     }
 
@@ -589,7 +584,6 @@ public class PainActivity extends AppCompatActivity {
         }else{
 
             btnsound.setImageResource(R.drawable.off);
-
 
         }
 
