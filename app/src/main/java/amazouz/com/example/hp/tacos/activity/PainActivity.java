@@ -1,50 +1,39 @@
 package amazouz.com.example.hp.tacos.activity;
 
-import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.icu.text.UnicodeSetSpanner;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import amazouz.com.example.hp.tacos.fragment.PainFragment;
 import amazouz.com.example.hp.tacos.R;
+import amazouz.com.example.hp.tacos.fragment.PainFragment;
 import amazouz.com.example.hp.tacos.service.VoiceService;
 import amazouz.com.example.hp.tacos.util.Util;
 
@@ -53,14 +42,9 @@ import android.speech.tts.TextToSpeech;
 
 
 public class PainActivity extends AppCompatActivity {
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+
+    private final int REQ_CODE_SPEECH_INPUT = 100;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private PainFragment pain;
 
@@ -168,35 +152,13 @@ public class PainActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
 
                 voiceCommand =intent.getStringExtra("value");
+                Toast.makeText(getApplication(),voiceCommand,Toast.LENGTH_LONG).show();
 
-                if(voiceCommand.equalsIgnoreCase("next step") || voiceCommand.equalsIgnoreCase("next")){
+                if(voiceCommand.equalsIgnoreCase("voice please")) {
 
+                    promptSpeechInput();
 
-                    pg=mViewPager.getCurrentItem();
-                    if(pg<mSectionsPagerAdapter.getCount()-1) {
-                        pg=pg + 1;
-                        mViewPager.setCurrentItem(pg);
-                        speechChoice(pg);
-                        changeBackgroundImage(pg);
-
-                    }
-
-                }else if(voiceCommand.equalsIgnoreCase("preview step") || voiceCommand.equalsIgnoreCase("preview")){
-
-
-                    pg=mViewPager.getCurrentItem();
-                    if(pg>0){
-                        pg=pg-1;
-                        mViewPager.setCurrentItem(pg);
-                        speechChoice(pg);
-                        changeBackgroundImage(pg);
-
-
-                    }
-
-                }else if(voiceCommand.equalsIgnoreCase("finish")){
-
-                    Toast.makeText(getApplication(),"validate",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplication(), voiceCommand, Toast.LENGTH_LONG).show();
 
                 }
 
@@ -247,32 +209,8 @@ public class PainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
     public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
@@ -322,19 +260,6 @@ public class PainActivity extends AppCompatActivity {
 
             pain=new PainFragment();
 
-            pain.fragmentexchange = new PainFragment.fragmentexchange() {
-                @Override
-                public void onclick() {
-
-                    try{
-                        unregisterReceiver(activityReceiver);
-                        mSensorManager.unregisterListener(proximitySensorEventListener);
-                    }catch (Exception e){
-
-                    }
-
-                }
-            };
             switch(position){
                 case 0:
                     pain.affichage(0);
@@ -373,15 +298,7 @@ public class PainActivity extends AppCompatActivity {
         t1.speak(voice, TextToSpeech.QUEUE_FLUSH, null);
     }
 
-    @Override
-    protected void onDestroy() {
-        if (t1 != null) {
-            t1.stop();
-            t1.shutdown();
-        }
-        super.onDestroy();
-        stopService(new Intent(PainActivity.this, VoiceService.class));
-    }
+
 
     public void speechChoice(int choice){
 
@@ -474,6 +391,8 @@ public class PainActivity extends AppCompatActivity {
 
     }
 
+    // SENSOR MANAGER
+
     SensorEventListener proximitySensorEventListener = new SensorEventListener() {
 
         @Override
@@ -554,26 +473,125 @@ public class PainActivity extends AppCompatActivity {
 
     };
 
-    @Override
-    protected void onResume() {
 
-        if (activityReceiver != null) {
 
-            IntentFilter intentFilter = new IntentFilter(ACTION_STRING_ACTIVITY);
-            registerReceiver(activityReceiver, intentFilter);
+    /// VOICE MANAGEMENT
+
+    private void promptSpeechInput() {
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,"Choissiez un pain");
+        try {
+            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+        } catch (ActivityNotFoundException a) {
 
         }
-
-        if (mProximity != null) {
-            mSensorManager.registerListener(proximitySensorEventListener,
-                    mProximity,
-                    SensorManager.SENSOR_DELAY_NORMAL
-            );
-        }
-
-        super.onResume();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+
+            case REQ_CODE_SPEECH_INPUT: {
+
+                if (resultCode == RESULT_OK && null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    voiceCommand = result.get(0).replaceAll("\\s+","");
+                    voiceCommand=voiceCommand.replaceAll("é", "e");
+                    voiceCommand=voiceCommand.replaceAll("é", "e");
+
+                    Toast.makeText(getApplicationContext(),voiceCommand,Toast.LENGTH_LONG).show();
+
+
+                    if(voiceCommand.equalsIgnoreCase("lemini")){
+                        mViewPager.setCurrentItem(0);
+                        speechChoice(0);
+                        changeBackgroundImage(0);
+
+                    }else if(voiceCommand.equalsIgnoreCase("lesimple")){
+
+                    mViewPager.setCurrentItem(1);
+                    speechChoice(1);
+                    changeBackgroundImage(1);
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("ledouble")){
+
+                        mViewPager.setCurrentItem(2);
+                        speechChoice(2);
+                        changeBackgroundImage(2);
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("lemaxi")){
+
+                        mViewPager.setCurrentItem(3);
+                        speechChoice(3);
+                        changeBackgroundImage(3);
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("leméga") || voiceCommand.equalsIgnoreCase("lemega")){
+
+                        mViewPager.setCurrentItem(4);
+                        speechChoice(4);
+                        changeBackgroundImage(4);
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("suivant")){
+
+                        pg=mViewPager.getCurrentItem();
+                        if(pg<mSectionsPagerAdapter.getCount()-1) {
+                            pg=pg + 1;
+                            mViewPager.setCurrentItem(pg);
+                            speechChoice(pg);
+                            Toast.makeText(getApplicationContext(),String.valueOf(pg),Toast.LENGTH_LONG).show();
+                            changeBackgroundImage(pg);
+
+                        }
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("precedent") ||voiceCommand.equalsIgnoreCase("prècèdant")||
+                            voiceCommand.equalsIgnoreCase("précédant")){
+
+                        pg=mViewPager.getCurrentItem();
+                        if(pg>0){
+                            pg=pg-1;
+                            mViewPager.setCurrentItem(pg);
+                            speechChoice(pg);
+                            Toast.makeText(getApplicationContext(),String.valueOf(pg),Toast.LENGTH_LONG).show();
+                            changeBackgroundImage(pg);
+
+
+                        }
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("valider")){
+
+                        pain.click();
+
+                    }
+
+
+                }
+                break;
+            }
+
+        }
+    }
+
+    // INIT SOUND
     public void initUi(){
         boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
 
@@ -590,13 +608,70 @@ public class PainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+
+        if (activityReceiver != null) {
+
+            IntentFilter intentFilter = new IntentFilter(ACTION_STRING_ACTIVITY);
+            registerReceiver(activityReceiver, intentFilter);
+
+        }
+
+        if (mProximity != null) {
+            mSensorManager.registerListener(proximitySensorEventListener,
+                    mProximity,
+                    SensorManager.SENSOR_DELAY_NORMAL
+            );
+        }
+
+
+        super.onStart();
+    }
+
+
+    @Override
     protected void onStop() {
         try{
+
             unregisterReceiver(activityReceiver);
-            mSensorManager.unregisterListener(proximitySensorEventListener);  // new add
+
         }catch (Exception e){
 
         }
+        mSensorManager.unregisterListener(proximitySensorEventListener);
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (t1 != null) {
+            t1.stop();
+            t1.shutdown();
+        }
+        super.onDestroy();
+        stopService(new Intent(PainActivity.this, VoiceService.class));
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

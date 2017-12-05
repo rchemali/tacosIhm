@@ -1,5 +1,6 @@
 package amazouz.com.example.hp.tacos.activity;
 
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,11 +10,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,12 +29,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import amazouz.com.example.hp.tacos.R;
-import amazouz.com.example.hp.tacos.fragment.PainFragment;
 import amazouz.com.example.hp.tacos.fragment.ViandeFragment;
-import amazouz.com.example.hp.tacos.service.VoiceService;
 import amazouz.com.example.hp.tacos.util.Util;
 
 public class ViandeActivity extends AppCompatActivity {
@@ -55,6 +54,8 @@ public class ViandeActivity extends AppCompatActivity {
     private boolean firstLaunch = false;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
+    private final int REQ_CODE_SPEECH_INPUT = 100;
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -72,6 +73,8 @@ public class ViandeActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
     TextToSpeech t1 ;
     private String pain;
+
+    ViandeFragment viande;
 
     ImageView imagePoulet , imageMerguez , imageEscalope , imageCordon, imagehache ;
 
@@ -159,35 +162,14 @@ public class ViandeActivity extends AppCompatActivity {
 
                 Toast.makeText(getApplication(),voiceCommand,Toast.LENGTH_LONG).show();
 
-                if(voiceCommand.equalsIgnoreCase("next step")){
+                if(voiceCommand.equalsIgnoreCase("voice please")) {
 
+                    promptSpeechInput();
 
-                    pg=mViewPager.getCurrentItem();
-                    if(pg<mSectionsPagerAdapter.getCount()-1) {
-                        pg=pg + 1;
-                        mViewPager.setCurrentItem(pg);
-                        speechChoice(pg);
-                        changeBackgroundImage(pg);
-
-                    }
-
-                }else if(voiceCommand.equalsIgnoreCase("preview step")){
-
-
-                    pg=mViewPager.getCurrentItem();
-                    if(pg>0){
-                        pg=pg-1;
-                        mViewPager.setCurrentItem(pg);
-                        speechChoice(pg);
-                        changeBackgroundImage(pg);
-
-                    }
-
-                }else if(voiceCommand.equalsIgnoreCase("please validate")){
-
-                    speakOut("valider");
+                    Toast.makeText(getApplication(), voiceCommand, Toast.LENGTH_LONG).show();
 
                 }
+
 
 
             }
@@ -237,8 +219,9 @@ public class ViandeActivity extends AppCompatActivity {
     }
 
 
+
     @Override
-    protected void onResume() {
+    protected void onStart() {
 
         if (activityReceiver != null) {
 
@@ -255,7 +238,7 @@ public class ViandeActivity extends AppCompatActivity {
         }
 
 
-        super.onResume();
+        super.onStart();
     }
 
 
@@ -397,17 +380,6 @@ public class ViandeActivity extends AppCompatActivity {
 
                                 if(firstLaunch != false){
 
-                                /*    viande.fragmentexchange = new ViandeFragment.fragmentexchange() {
-                                        @Override
-                                        public void onclick() {
-                                            try{
-                                                unregisterReceiver(activityReceiver);
-                                                mSensorManager.unregisterListener(proximitySensorEventListener);
-                                            }catch (Exception e){
-
-                                            }
-                                        }
-                                    }; */
 
 
                                 }
@@ -512,6 +484,118 @@ public class ViandeActivity extends AppCompatActivity {
 
 
 
+    /// VOICE MANAGEMENT
+
+    private void promptSpeechInput() {
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,"Choissiez une viande");
+        try {
+            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+        } catch (ActivityNotFoundException a) {
+
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+
+            case REQ_CODE_SPEECH_INPUT: {
+
+                if (resultCode == RESULT_OK && null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    voiceCommand = result.get(0).replaceAll("\\s+","");
+
+                    Toast.makeText(getApplicationContext(),voiceCommand,Toast.LENGTH_LONG).show();
+
+                    if(voiceCommand.equalsIgnoreCase("poulet")){
+                        mViewPager.setCurrentItem(0);
+                        speechChoice(0);
+                        changeBackgroundImage(0);
+
+                    }else if(voiceCommand.equalsIgnoreCase("mergez")){
+
+                        mViewPager.setCurrentItem(1);
+                        speechChoice(1);
+                        changeBackgroundImage(1);
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("escalope")){
+
+                        mViewPager.setCurrentItem(2);
+                        speechChoice(2);
+                        changeBackgroundImage(2);
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("cordonbleu")){
+
+                        mViewPager.setCurrentItem(3);
+                        speechChoice(3);
+                        changeBackgroundImage(3);
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("viandehache")){
+
+                        mViewPager.setCurrentItem(4);
+                        speechChoice(4);
+                        changeBackgroundImage(4);
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("suivant")){
+
+                        pg=mViewPager.getCurrentItem();
+                        if(pg<mSectionsPagerAdapter.getCount()-1) {
+                            pg=pg + 1;
+                            mViewPager.setCurrentItem(pg);
+                            speechChoice(pg);
+                            changeBackgroundImage(pg);
+
+                        }
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("precedent") ||voiceCommand.equalsIgnoreCase("prècèdant")||
+                            voiceCommand.equalsIgnoreCase("précédant")){
+
+                        pg=mViewPager.getCurrentItem();
+                        if(pg>0){
+                            pg=pg-1;
+                            mViewPager.setCurrentItem(pg);
+                            speechChoice(pg);
+                            changeBackgroundImage(pg);
+
+
+                        }
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("valider")){
+
+                        viande.click();
+
+                    }
+
+
+                }
+                break;
+            }
+
+        }
+    }
+
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -527,18 +611,8 @@ public class ViandeActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             // return PlaceholderFragment.newInstance(position + 1);
-            ViandeFragment viande=new ViandeFragment();
-            viande.fragmentexchange = new ViandeFragment.fragmentexchange() {
-                @Override
-                public void onclick() {
-                    try{
-                        unregisterReceiver(activityReceiver);
-                        mSensorManager.unregisterListener(proximitySensorEventListener);
-                    }catch (Exception e){
+             viande=new ViandeFragment();
 
-                    }
-                }
-            };
 
             switch(position){
                 case 0:
@@ -586,11 +660,15 @@ public class ViandeActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    protected void onStop() {
+        try{
 
-        unregisterReceiver(activityReceiver);
+            unregisterReceiver(activityReceiver);
+
+        }catch (Exception e){
+
+        }
         mSensorManager.unregisterListener(proximitySensorEventListener);
-
-        super.onBackPressed();
+        super.onStop();
     }
 }

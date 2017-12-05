@@ -1,8 +1,16 @@
 package amazouz.com.example.hp.tacos.util;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.speech.RecognizerIntent;
+import android.widget.Toast;
+
+import java.util.Locale;
+
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 /**
  * Created by chemali on 28/11/2017.
@@ -33,6 +41,8 @@ public class Util {
         return value;
 
     }
+
+
 
 
 }

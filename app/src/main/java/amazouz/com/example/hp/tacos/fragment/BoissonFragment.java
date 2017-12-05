@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import amazouz.com.example.hp.tacos.R;
 import amazouz.com.example.hp.tacos.activity.CommandActivity;
+import amazouz.com.example.hp.tacos.activity.DrinkActivity;
 
 /**
  * Created by HP on 10/11/2017.
@@ -61,6 +62,18 @@ public class BoissonFragment extends android.support.v4.app.Fragment {
         }
         return "";
     }
+
+
+    public void click(){
+        Intent toy=new Intent(getContext(),CommandActivity.class);
+        toy.putExtra("pain",pain);
+        toy.putExtra("sauce",sauce);
+        toy.putExtra("viande",viande);
+        toy.putExtra("boisson",boisson);
+        startActivity(toy);
+
+    }
+
     public void affichage(int a,String pain,String sauce,String  viande){
         boisson=choix(a);
         this.viande=viande;

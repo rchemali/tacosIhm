@@ -56,17 +56,18 @@ public class VoiceService extends Service implements
     private static final String LOG_TAG = VoiceService.class.getSimpleName();
     private static final String ACTION_STRING_ACTIVITY = "ToActivity";
 
-    /* Named searches allow to quickly reconfigure the decoder */
-    private static final String KWS_SEARCH = "nextstep";
-    private static final String KWS_SEARCH2 = "preview";
-    private static final String KWS_SEARCH3 = "ok";
+
+    private static final String KWS_SEARCH = "wakeup";
+    private static final String FORECAST_SEARCH = "forecast";
+    private static final String DIGITS_SEARCH = "digits";
+    private static final String PHONE_SEARCH = "phones";
+    private static final String MENU_SEARCH = "menu";
 
     /* Keyword we are looking for to activate menu */
-    private static final String KEYPHRASE = "next step";
-    private static final String KEYPHRASE2 = "preview step";
-    private static final String KEYPHRASE3 = "ok google";
+    private static final String KEYPHRASE = "voice please";
 
-
+    /* Used to handle permission request */
+    private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
     private SpeechRecognizer recognizer;
 
@@ -78,9 +79,9 @@ public class VoiceService extends Service implements
 
 
 
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
 
         // Check if user has given permission to record audio
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
@@ -143,30 +144,21 @@ public class VoiceService extends Service implements
      */
     @Override
     public void onPartialResult(Hypothesis hypothesis) {
-
         if (hypothesis == null)
             return;
 
         String text = hypothesis.getHypstr();
-
-        if (text.equalsIgnoreCase(KEYPHRASE)) {
+        if (text.equals(KEYPHRASE)) {
             switchSearch(KWS_SEARCH);
             sendBroadcast(text);
-        }
-        else if(text.equalsIgnoreCase(KEYPHRASE2)){
-            switchSearch(KWS_SEARCH2);
-            sendBroadcast(text);
-        }
+        }else if (text.equals(DIGITS_SEARCH))
+            switchSearch(DIGITS_SEARCH);
+        else if (text.equals(PHONE_SEARCH))
+            switchSearch(PHONE_SEARCH);
+        else if (text.equals(FORECAST_SEARCH))
+            switchSearch(FORECAST_SEARCH);
+        else{}
 
-        else if(text.equalsIgnoreCase(KEYPHRASE3)){
-            Toast.makeText(getApplicationContext(),text,Toast.LENGTH_LONG).show();
-            switchSearch(KWS_SEARCH3);
-            sendBroadcast(text);
-        }else{
-
-        }
-
-        Log.i(LOG_TAG, "onPartialResult text=" +text);
     }
 
     /**
@@ -176,14 +168,11 @@ public class VoiceService extends Service implements
     public void onResult(Hypothesis hypothesis) {
         if (hypothesis != null) {
             String text = hypothesis.getHypstr();
-            Log.i(LOG_TAG, "onResult text=" +text);
-
         }
     }
 
     @Override
     public void onBeginningOfSpeech() {
-        Log.i(LOG_TAG, "onBeginningOfSpeech");
     }
 
     /**
@@ -191,37 +180,20 @@ public class VoiceService extends Service implements
      */
     @Override
     public void onEndOfSpeech() {
-
-        if (!recognizer.getSearchName().equalsIgnoreCase(KWS_SEARCH))
+        if (!recognizer.getSearchName().equals(KWS_SEARCH))
             switchSearch(KWS_SEARCH);
-
-        else if(!recognizer.getSearchName().equalsIgnoreCase(KWS_SEARCH2)){
-            switchSearch(KWS_SEARCH2);
-        }
-
-        else if(!recognizer.getSearchName().equalsIgnoreCase(KWS_SEARCH3)){
-            switchSearch(KWS_SEARCH3);
-        }
-        // ici
-        Log.i(LOG_TAG, "onEndOfSpeech");
     }
 
     private void switchSearch(String searchName) {
-        Log.i(LOG_TAG, "switchSearch searchName = " + searchName);
         recognizer.stop();
 
+        // If we are not spotting, start listening with timeout (10000 ms or 10 seconds).
         if (searchName.equals(KWS_SEARCH))
             recognizer.startListening(searchName);
-        else if(searchName.equals(KWS_SEARCH2)){
-            recognizer.startListening(searchName);
-        } else if (searchName.equals(KWS_SEARCH3)) {
-            recognizer.startListening(searchName);
-        } else {
-        }
+        else
             recognizer.startListening(searchName, 10000);
 
-        // If we are not spotting, start listening with timeout (10000 ms or 10 seconds).
-        //recognizer.startListening(searchName, 7000);
+
     }
 
     private void setupRecognizer(File assetsDir) throws IOException {
@@ -233,24 +205,32 @@ public class VoiceService extends Service implements
                 .setDictionary(new File(assetsDir, "cmudict-en-us.dict"))
 
                 .setRawLogDir(assetsDir) // To disable logging of raw audio comment out this call (takes a lot of space on the device)
-                .setKeywordThreshold(1e-45f) // Threshold to tune for keyphrase to balance between false alarms and misses
-                .setBoolean("-allphone_ci", true)  // Use context-independent phonetic search, context-dependent is too slow for mobile
 
                 .getRecognizer();
         recognizer.addListener(this);
 
-
-
-        /** In your application you might not need to add all those searches.
-         * They are added here for demonstration. You can leave just one.
+        /* In your application you might not need to add all those searches.
+          They are added here for demonstration. You can leave just one.
          */
 
         // Create keyword-activation search.
         recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
-        recognizer.addKeyphraseSearch(KWS_SEARCH2, KEYPHRASE2);
-        recognizer.addKeyphraseSearch(KWS_SEARCH3, KEYPHRASE3);
-       // recognizer.addGrammarSearch("command",new File(assetsDir,"command.gram"));
 
+        // Create grammar-based search for selection between demos
+        File menuGrammar = new File(assetsDir, "menu.gram");
+        recognizer.addGrammarSearch(MENU_SEARCH, menuGrammar);
+
+        // Create grammar-based search for digit recognition
+        File digitsGrammar = new File(assetsDir, "digits.gram");
+        recognizer.addGrammarSearch(DIGITS_SEARCH, digitsGrammar);
+
+        // Create language model search
+        File languageModel = new File(assetsDir, "weather.dmp");
+        recognizer.addNgramSearch(FORECAST_SEARCH, languageModel);
+
+        // Phonetic search
+        File phoneticModel = new File(assetsDir, "en-phone.dmp");
+        recognizer.addAllphoneSearch(PHONE_SEARCH, phoneticModel);
     }
 
     @Override

@@ -11,8 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import amazouz.com.example.hp.tacos.R;
-import amazouz.com.example.hp.tacos.activity.DrinkActivity;
 import amazouz.com.example.hp.tacos.activity.SauceActivity;
+import amazouz.com.example.hp.tacos.activity.ViandeActivity;
 
 /**
  * Created by HP on 10/11/2017.
@@ -64,6 +64,15 @@ public class ViandeFragment extends android.support.v4.app.Fragment{
         }
         return "";
     }
+
+    public void click(){
+        Intent toy=new Intent(getContext(),SauceActivity.class);
+        toy.putExtra("pain",pain);
+        toy.putExtra("viande",viande);
+        startActivity(toy);
+
+    }
+
     public void affichage(int a,String pain){
         viande=choix(a);
         this.pain=pain;

@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import amazouz.com.example.hp.tacos.R;
 
+
 public class SplashScreen extends AppCompatActivity {
 
     @Override

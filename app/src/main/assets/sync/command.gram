@@ -2,10 +2,4 @@
 
 grammar command;
 
-<command> = next    |
-          preview  |
-          ok  |
-          please  |
-            validate;
-
-public <commands> = <command>+;
+public <item> = next step | preview step | finish step | voice please ;

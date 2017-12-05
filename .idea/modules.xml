@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/pocketsphinx-android-5prealpha-release/pocketsphinx-android-5prealpha-release.iml" filepath="$PROJECT_DIR$/pocketsphinx-android-5prealpha-release/pocketsphinx-android-5prealpha-release.iml" />
-      <module fileurl="file://$PROJECT_DIR$/tacos.iml" filepath="$PROJECT_DIR$/tacos.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tacosV2.iml" filepath="$PROJECT_DIR$/tacosV2.iml" />
     </modules>
   </component>
 </project>
