@@ -306,8 +306,7 @@ public class DrinkActivity extends AppCompatActivity {
 
                 }
 
-                if (event.values[0] == 1.0) {
-
+                if (event.values[0] != 0.0) {
 
                     numberOfSlidesPerSecond++;
 
@@ -323,30 +322,34 @@ public class DrinkActivity extends AppCompatActivity {
                             if (endTime > startTime + 2) {
                                 // ====== Validate action ======
 
-                                if(firstLaunch != false){
-
+                                if (firstLaunch != false) {
+                                    mSensorManager.unregisterListener(proximitySensorEventListener);
+                                    boisson.nextFragment();
+                                    //finish();
                                 }
+
 
                             } else if (numberOfSlidesPerSecond > 1) {
                                 // ====== Slice twice action =======
-                                pg=mViewPager.getCurrentItem();
-                                if(pg>0){
-                                    pg=pg-1;
+                                pg = mViewPager.getCurrentItem();
+
+                                if (pg > 0) {
+                                    pg = pg - 1;
                                     mViewPager.setCurrentItem(pg); // rak dayro hna !!! att atla3lfou9kamel
                                     speechChoice(pg);
                                     changeBackgroundImage(pg);
-
+                                    numberOfSlidesPerSecond = -1;
                                 }
 
-                            } else {
-                                // ====== Slice once action =======
-                                pg=mViewPager.getCurrentItem();
-                                if(pg<mSectionsPagerAdapter.getCount()-1) {
-                                    pg=pg + 1;
+
+                            } else if (numberOfSlidesPerSecond == 1) {
+                                // ====== Slice once action ======
+                                pg = mViewPager.getCurrentItem();
+                                if (pg < mSectionsPagerAdapter.getCount() - 1) {
+                                    pg = pg + 1;
                                     mViewPager.setCurrentItem(pg);
                                     speechChoice(pg);
                                     changeBackgroundImage(pg);
-
 
                                 }
                             }
@@ -361,9 +364,14 @@ public class DrinkActivity extends AppCompatActivity {
                         }
                     }, 1500);
 
+
                 }
+
             }
+
         }
+
+
     };
 
     @Override
@@ -438,7 +446,7 @@ public class DrinkActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             //return PlaceholderFragment.newInstance(position + 1);
-             boisson=new BoissonFragment();
+            boisson = new BoissonFragment();
             boisson.fragmentexchange = new BoissonFragment.fragmentexchange() {
                 @Override
                 public void onclick() {

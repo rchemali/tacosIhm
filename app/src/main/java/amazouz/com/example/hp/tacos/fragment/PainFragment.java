@@ -82,6 +82,13 @@ public void click(){
         pain=choix(a);
     }
 
+    public void nextFragment() {
+        Intent toy = new Intent(getContext(), ViandeActivity.class);
+        toy.putExtra("pain", pain);
+        startActivity(toy);
+
+    }
+
 
     @Nullable
     @Override

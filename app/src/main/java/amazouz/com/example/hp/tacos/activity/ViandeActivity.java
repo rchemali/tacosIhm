@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -119,7 +118,6 @@ public class ViandeActivity extends AppCompatActivity {
             }
         });
 
-        Toast.makeText(getApplicationContext(),String.valueOf(Util.getCurrentParams(getApplicationContext())),Toast.LENGTH_LONG).show();
 
         initUi();
 
@@ -160,13 +158,13 @@ public class ViandeActivity extends AppCompatActivity {
 
                 voiceCommand =intent.getStringExtra("value");
 
-                Toast.makeText(getApplication(),voiceCommand,Toast.LENGTH_LONG).show();
+
 
                 if(voiceCommand.equalsIgnoreCase("voice please")) {
 
                     promptSpeechInput();
 
-                    Toast.makeText(getApplication(), voiceCommand, Toast.LENGTH_LONG).show();
+
 
                 }
 
@@ -348,7 +346,6 @@ public class ViandeActivity extends AppCompatActivity {
 
         }
 
-
         @Override
         public void onSensorChanged(SensorEvent event) {
             // TODO Auto-generated method stub
@@ -361,8 +358,7 @@ public class ViandeActivity extends AppCompatActivity {
 
                 }
 
-                if (event.values[0] == 1.0) {
-
+                if (event.values[0] != 0.0) {
 
                     numberOfSlidesPerSecond++;
 
@@ -378,28 +374,31 @@ public class ViandeActivity extends AppCompatActivity {
                             if (endTime > startTime + 2) {
                                 // ====== Validate action ======
 
-                                if(firstLaunch != false){
-
-
-
+                                if (firstLaunch != false) {
+                                    mSensorManager.unregisterListener(proximitySensorEventListener);
+                                    viande.nextFragment();
+                                    //finish();
                                 }
+
 
                             } else if (numberOfSlidesPerSecond > 1) {
                                 // ====== Slice twice action =======
-                                pg=mViewPager.getCurrentItem();
-                                if(pg>0){
-                                    pg=pg-1;
+                                pg = mViewPager.getCurrentItem();
+
+                                if (pg > 0) {
+                                    pg = pg - 1;
                                     mViewPager.setCurrentItem(pg); // rak dayro hna !!! att atla3lfou9kamel
                                     speechChoice(pg);
                                     changeBackgroundImage(pg);
-
+                                    numberOfSlidesPerSecond = -1;
                                 }
 
-                            } else {
-                                // ====== Slice once action =======
-                                pg=mViewPager.getCurrentItem();
-                                if(pg<mSectionsPagerAdapter.getCount()-1) {
-                                    pg=pg + 1;
+
+                            } else if (numberOfSlidesPerSecond == 1) {
+                                // ====== Slice once action ======
+                                pg = mViewPager.getCurrentItem();
+                                if (pg < mSectionsPagerAdapter.getCount() - 1) {
+                                    pg = pg + 1;
                                     mViewPager.setCurrentItem(pg);
                                     speechChoice(pg);
                                     changeBackgroundImage(pg);
@@ -417,9 +416,14 @@ public class ViandeActivity extends AppCompatActivity {
                         }
                     }, 1500);
 
+
                 }
+
             }
+
         }
+
+
     };
 
 
@@ -513,8 +517,6 @@ public class ViandeActivity extends AppCompatActivity {
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     voiceCommand = result.get(0).replaceAll("\\s+","");
-
-                    Toast.makeText(getApplicationContext(),voiceCommand,Toast.LENGTH_LONG).show();
 
                     if(voiceCommand.equalsIgnoreCase("poulet")){
                         mViewPager.setCurrentItem(0);
@@ -611,7 +613,7 @@ public class ViandeActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             // return PlaceholderFragment.newInstance(position + 1);
-             viande=new ViandeFragment();
+             viande = new ViandeFragment();
 
 
             switch(position){

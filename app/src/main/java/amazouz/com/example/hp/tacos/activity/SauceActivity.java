@@ -265,7 +265,6 @@ public class SauceActivity extends AppCompatActivity {
 
         }
 
-
         @Override
         public void onSensorChanged(SensorEvent event) {
             // TODO Auto-generated method stub
@@ -278,8 +277,7 @@ public class SauceActivity extends AppCompatActivity {
 
                 }
 
-                if (event.values[0] == 1.0) {
-
+                if (event.values[0] != 0.0) {
 
                     numberOfSlidesPerSecond++;
 
@@ -295,29 +293,34 @@ public class SauceActivity extends AppCompatActivity {
                             if (endTime > startTime + 2) {
                                 // ====== Validate action ======
 
-                                if(firstLaunch != false){
-
+                                if (firstLaunch != false) {
+                                    mSensorManager.unregisterListener(proximitySensorEventListener);
+                                    sauce.nextFragment();
+                                    //finish();
                                 }
+
 
                             } else if (numberOfSlidesPerSecond > 1) {
                                 // ====== Slice twice action =======
-                                pg=mViewPager.getCurrentItem();
-                                if(pg>0){
-                                    pg=pg-1;
+                                pg = mViewPager.getCurrentItem();
+
+                                if (pg > 0) {
+                                    pg = pg - 1;
                                     mViewPager.setCurrentItem(pg); // rak dayro hna !!! att atla3lfou9kamel
                                     speechChoice(pg);
                                     changeBackgroundImage(pg);
+                                    numberOfSlidesPerSecond = -1;
                                 }
 
-                            } else {
-                                // ====== Slice once action =======
-                                pg=mViewPager.getCurrentItem();
-                                if(pg<mSectionsPagerAdapter.getCount()-1) {
-                                    pg=pg + 1;
+
+                            } else if (numberOfSlidesPerSecond == 1) {
+                                // ====== Slice once action ======
+                                pg = mViewPager.getCurrentItem();
+                                if (pg < mSectionsPagerAdapter.getCount() - 1) {
+                                    pg = pg + 1;
                                     mViewPager.setCurrentItem(pg);
                                     speechChoice(pg);
                                     changeBackgroundImage(pg);
-
 
                                 }
                             }
@@ -332,9 +335,14 @@ public class SauceActivity extends AppCompatActivity {
                         }
                     }, 1500);
 
+
                 }
+
             }
+
         }
+
+
     };
 
     public void changeBackgroundImage(int position){
@@ -469,7 +477,7 @@ public class SauceActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
 
 
-             sauce=new SauceFragment();
+             sauce = new SauceFragment();
 
 
             switch(position){

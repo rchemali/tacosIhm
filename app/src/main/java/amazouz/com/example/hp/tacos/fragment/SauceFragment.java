@@ -84,6 +84,17 @@ public class SauceFragment extends android.support.v4.app.Fragment {
 
     }
 
+    public void nextFragment() {
+        Intent toy=new Intent(getContext(),DrinkActivity.class);
+        toy.putExtra("viande",viande);
+        toy.putExtra("sauce",sauce);
+        toy.putExtra("pain",pain);
+        startActivity(toy);
+        if (fragmentexchange != null) {
+            fragmentexchange.onclick();
+        }
+    }
+
 
     @Nullable
     @Override

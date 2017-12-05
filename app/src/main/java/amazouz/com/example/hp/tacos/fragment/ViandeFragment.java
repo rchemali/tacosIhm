@@ -80,6 +80,16 @@ public class ViandeFragment extends android.support.v4.app.Fragment{
 
     }
 
+    public void nextFragment() {
+        Intent toy = new Intent(getContext(), SauceActivity.class);
+        toy.putExtra("pain", pain);
+        toy.putExtra("viande", viande);
+        startActivity(toy);
+        if (fragmentexchange != null) {
+            fragmentexchange.onclick();
+        }
+    }
+
 
     @Nullable
     @Override

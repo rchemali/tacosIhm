@@ -40,7 +40,6 @@ import amazouz.com.example.hp.tacos.util.Util;
 import android.speech.tts.TextToSpeech;
 
 
-
 public class PainActivity extends AppCompatActivity {
 
     private final int REQ_CODE_SPEECH_INPUT = 100;
@@ -58,7 +57,7 @@ public class PainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private int pg=0;
+    private int pg = 0;
     private ImageView gauche;
     private ImageView droite;
 
@@ -67,16 +66,16 @@ public class PainActivity extends AppCompatActivity {
 
     String voiceCommand = "";
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
-    TextToSpeech t1 ;
+    TextToSpeech t1;
 
-    LinearLayout linearimages ;
+    LinearLayout linearimages;
 
     private int dotscount;
     private ImageView[] dots;
 
-    ImageView imageMini , imageDouble , imageSimple , imageMaxi, imageMega ;
+    ImageView imageMini, imageDouble, imageSimple, imageMaxi, imageMega;
 
-    ImageView btnsound ;
+    ImageView btnsound;
 
     // mode son
     int count = 0;
@@ -86,16 +85,16 @@ public class PainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-      //  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       // setSupportActionBar(toolbar);
+        //  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // setSupportActionBar(toolbar);
 
-        linearimages = (LinearLayout)findViewById(R.id.imagecontenair);
+        linearimages = (LinearLayout) findViewById(R.id.imagecontenair);
 
-        imageMini = (ImageView)findViewById(R.id.mini);
-        imageDouble = (ImageView)findViewById(R.id.Sdouble);
-        imageSimple = (ImageView)findViewById(R.id.simple);
-        imageMaxi = (ImageView)findViewById(R.id.maxi);
-        imageMega = (ImageView)findViewById(R.id.mega);
+        imageMini = (ImageView) findViewById(R.id.mini);
+        imageDouble = (ImageView) findViewById(R.id.Sdouble);
+        imageSimple = (ImageView) findViewById(R.id.simple);
+        imageMaxi = (ImageView) findViewById(R.id.maxi);
+        imageMega = (ImageView) findViewById(R.id.mega);
         btnsound = (ImageView) findViewById(R.id.sound);
 
         t1 = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
@@ -106,7 +105,7 @@ public class PainActivity extends AppCompatActivity {
         });
 
         // activate sound
-        Util.paramsSound(getApplicationContext(),true);
+        Util.paramsSound(getApplicationContext(), true);
 
         initUi();
 
@@ -114,14 +113,14 @@ public class PainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(Util.getCurrentParams(getApplicationContext())){
+                if (Util.getCurrentParams(getApplicationContext())) {
 
-                    Util.paramsSound(getApplicationContext(),false);
+                    Util.paramsSound(getApplicationContext(), false);
                     btnsound.setImageResource(R.drawable.off);
 
-                }else{
+                } else {
 
-                    Util.paramsSound(getApplicationContext(),true);
+                    Util.paramsSound(getApplicationContext(), true);
                     btnsound.setImageResource(R.drawable.on);
 
                 }
@@ -151,14 +150,13 @@ public class PainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                voiceCommand =intent.getStringExtra("value");
-                Toast.makeText(getApplication(),voiceCommand,Toast.LENGTH_LONG).show();
+                voiceCommand = intent.getStringExtra("value");
 
-                if(voiceCommand.equalsIgnoreCase("voice please")) {
+
+                if (voiceCommand.equalsIgnoreCase("voice please")) {
 
                     promptSpeechInput();
 
-                    Toast.makeText(getApplication(), voiceCommand, Toast.LENGTH_LONG).show();
 
                 }
 
@@ -174,33 +172,33 @@ public class PainActivity extends AppCompatActivity {
 
         }
 
-        gauche=(ImageView)findViewById(R.id.gc1);
+        gauche = (ImageView) findViewById(R.id.gc1);
         gauche.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                pg=mViewPager.getCurrentItem();
-                if(pg>0){
-                    pg=pg-1;
-                mViewPager.setCurrentItem(pg);
+                pg = mViewPager.getCurrentItem();
+                if (pg > 0) {
+                    pg = pg - 1;
+                    mViewPager.setCurrentItem(pg);
                     speechChoice(pg);
-                    Toast.makeText(getApplicationContext(),String.valueOf(pg),Toast.LENGTH_LONG).show();
+
                     changeBackgroundImage(pg);
 
 
                 }
             }
         });
-        droite=(ImageView)findViewById(R.id.dr1);
+        droite = (ImageView) findViewById(R.id.dr1);
         droite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pg=mViewPager.getCurrentItem();
-                if(pg<mSectionsPagerAdapter.getCount()-1) {
-                        pg=pg + 1;
+                pg = mViewPager.getCurrentItem();
+                if (pg < mSectionsPagerAdapter.getCount() - 1) {
+                    pg = pg + 1;
                     mViewPager.setCurrentItem(pg);
                     speechChoice(pg);
-                    Toast.makeText(getApplicationContext(),String.valueOf(pg),Toast.LENGTH_LONG).show();
+
                     changeBackgroundImage(pg);
 
                 }
@@ -208,7 +206,6 @@ public class PainActivity extends AppCompatActivity {
         });
 
     }
-
 
 
     public static class PlaceholderFragment extends Fragment {
@@ -256,11 +253,11 @@ public class PainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-           // return PlaceholderFragment.newInstance(position + 1);
+            // return PlaceholderFragment.newInstance(position + 1);
 
-            pain=new PainFragment();
+            pain = new PainFragment();
 
-            switch(position){
+            switch (position) {
                 case 0:
                     pain.affichage(0);
                     return pain;
@@ -299,12 +296,11 @@ public class PainActivity extends AppCompatActivity {
     }
 
 
-
-    public void speechChoice(int choice){
+    public void speechChoice(int choice) {
 
         boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
 
-        if(soundIsActivate) {
+        if (soundIsActivate) {
 
             switch (choice) {
 
@@ -328,15 +324,15 @@ public class PainActivity extends AppCompatActivity {
                     speakOut("Le Méga");
                     break;
             }
-        }else {
+        } else {
 
         }
 
     }
 
-    public void changeBackgroundImage(int position){
+    public void changeBackgroundImage(int position) {
 
-        switch (position){
+        switch (position) {
 
             case 0:
 
@@ -413,7 +409,7 @@ public class PainActivity extends AppCompatActivity {
 
                 }
 
-                if (event.values[0] == 1.0) {
+                if (event.values[0] != 0.0) {
 
                     numberOfSlidesPerSecond++;
 
@@ -429,26 +425,31 @@ public class PainActivity extends AppCompatActivity {
                             if (endTime > startTime + 2) {
                                 // ====== Validate action ======
 
-                               if(firstLaunch != false){
-
-                               }
+                                if (firstLaunch != false) {
+                                    mSensorManager.unregisterListener(proximitySensorEventListener);
+                                    pain.nextFragment();
+                                    //finish();
+                                }
 
 
                             } else if (numberOfSlidesPerSecond > 1) {
                                 // ====== Slice twice action =======
-                                pg=mViewPager.getCurrentItem();
-                                if(pg>0){
-                                    pg=pg-1;
+                                pg = mViewPager.getCurrentItem();
+
+                                if (pg > 0) {
+                                    pg = pg - 1;
                                     mViewPager.setCurrentItem(pg); // rak dayro hna !!! att atla3lfou9kamel
                                     speechChoice(pg);
                                     changeBackgroundImage(pg);
+                                    numberOfSlidesPerSecond = -1;
                                 }
 
-                            } else {
-                                // ====== Slice once action =======
-                                pg=mViewPager.getCurrentItem();
-                                if(pg<mSectionsPagerAdapter.getCount()-1) {
-                                    pg=pg + 1;
+
+                            } else if (numberOfSlidesPerSecond == 1) {
+                                // ====== Slice once action ======
+                                pg = mViewPager.getCurrentItem();
+                                if (pg < mSectionsPagerAdapter.getCount() - 1) {
+                                    pg = pg + 1;
                                     mViewPager.setCurrentItem(pg);
                                     speechChoice(pg);
                                     changeBackgroundImage(pg);
@@ -466,13 +467,15 @@ public class PainActivity extends AppCompatActivity {
                         }
                     }, 1500);
 
+
                 }
 
             }
+
         }
 
-    };
 
+    };
 
 
     /// VOICE MANAGEMENT
@@ -483,7 +486,7 @@ public class PainActivity extends AppCompatActivity {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,"Choissiez un pain");
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Choissiez un pain");
         try {
             startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
         } catch (ActivityNotFoundException a) {
@@ -503,81 +506,65 @@ public class PainActivity extends AppCompatActivity {
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    voiceCommand = result.get(0).replaceAll("\\s+","");
-                    voiceCommand=voiceCommand.replaceAll("é", "e");
-                    voiceCommand=voiceCommand.replaceAll("é", "e");
-
-                    Toast.makeText(getApplicationContext(),voiceCommand,Toast.LENGTH_LONG).show();
+                    voiceCommand = result.get(0).replaceAll("\\s+", "");
+                    voiceCommand = voiceCommand.replaceAll("é", "e");
+                    voiceCommand = voiceCommand.replaceAll("é", "e");
 
 
-                    if(voiceCommand.equalsIgnoreCase("lemini")){
+                    if (voiceCommand.equalsIgnoreCase("lemini")) {
                         mViewPager.setCurrentItem(0);
                         speechChoice(0);
                         changeBackgroundImage(0);
 
-                    }else if(voiceCommand.equalsIgnoreCase("lesimple")){
+                    } else if (voiceCommand.equalsIgnoreCase("lesimple")) {
 
-                    mViewPager.setCurrentItem(1);
-                    speechChoice(1);
-                    changeBackgroundImage(1);
+                        mViewPager.setCurrentItem(1);
+                        speechChoice(1);
+                        changeBackgroundImage(1);
 
-                    }
-
-                    else if(voiceCommand.equalsIgnoreCase("ledouble")){
+                    } else if (voiceCommand.equalsIgnoreCase("ledouble")) {
 
                         mViewPager.setCurrentItem(2);
                         speechChoice(2);
                         changeBackgroundImage(2);
 
-                    }
-
-                    else if(voiceCommand.equalsIgnoreCase("lemaxi")){
+                    } else if (voiceCommand.equalsIgnoreCase("lemaxi")) {
 
                         mViewPager.setCurrentItem(3);
                         speechChoice(3);
                         changeBackgroundImage(3);
 
-                    }
-
-                    else if(voiceCommand.equalsIgnoreCase("leméga") || voiceCommand.equalsIgnoreCase("lemega")){
+                    } else if (voiceCommand.equalsIgnoreCase("leméga") || voiceCommand.equalsIgnoreCase("lemega")) {
 
                         mViewPager.setCurrentItem(4);
                         speechChoice(4);
                         changeBackgroundImage(4);
 
-                    }
+                    } else if (voiceCommand.equalsIgnoreCase("suivant")) {
 
-                    else if(voiceCommand.equalsIgnoreCase("suivant")){
-
-                        pg=mViewPager.getCurrentItem();
-                        if(pg<mSectionsPagerAdapter.getCount()-1) {
-                            pg=pg + 1;
+                        pg = mViewPager.getCurrentItem();
+                        if (pg < mSectionsPagerAdapter.getCount() - 1) {
+                            pg = pg + 1;
                             mViewPager.setCurrentItem(pg);
                             speechChoice(pg);
-                            Toast.makeText(getApplicationContext(),String.valueOf(pg),Toast.LENGTH_LONG).show();
                             changeBackgroundImage(pg);
 
                         }
 
-                    }
+                    } else if (voiceCommand.equalsIgnoreCase("precedent") || voiceCommand.equalsIgnoreCase("prècèdant") ||
+                            voiceCommand.equalsIgnoreCase("précédant")) {
 
-                    else if(voiceCommand.equalsIgnoreCase("precedent") ||voiceCommand.equalsIgnoreCase("prècèdant")||
-                            voiceCommand.equalsIgnoreCase("précédant")){
-
-                        pg=mViewPager.getCurrentItem();
-                        if(pg>0){
-                            pg=pg-1;
+                        pg = mViewPager.getCurrentItem();
+                        if (pg > 0) {
+                            pg = pg - 1;
                             mViewPager.setCurrentItem(pg);
                             speechChoice(pg);
-                            Toast.makeText(getApplicationContext(),String.valueOf(pg),Toast.LENGTH_LONG).show();
                             changeBackgroundImage(pg);
 
 
                         }
 
-                    }
-
-                    else if(voiceCommand.equalsIgnoreCase("valider")){
+                    } else if (voiceCommand.equalsIgnoreCase("valider")) {
 
                         pain.click();
 
@@ -592,14 +579,14 @@ public class PainActivity extends AppCompatActivity {
     }
 
     // INIT SOUND
-    public void initUi(){
+    public void initUi() {
         boolean soundIsActivate = Util.getCurrentParams(getApplicationContext());
 
-        if(soundIsActivate) {
+        if (soundIsActivate) {
 
             btnsound.setImageResource(R.drawable.on);
 
-        }else{
+        } else {
 
             btnsound.setImageResource(R.drawable.off);
 
@@ -631,11 +618,11 @@ public class PainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        try{
+        try {
 
             unregisterReceiver(activityReceiver);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         mSensorManager.unregisterListener(proximitySensorEventListener);
