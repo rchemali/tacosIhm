@@ -90,9 +90,7 @@ public class BoissonFragment extends android.support.v4.app.Fragment {
         toy.putExtra("pain",pain);
         toy.putExtra("boisson",boisson);
         startActivity(toy);
-        if (fragmentexchange != null) {
-            fragmentexchange.onclick();
-        }
+
     }
 
 

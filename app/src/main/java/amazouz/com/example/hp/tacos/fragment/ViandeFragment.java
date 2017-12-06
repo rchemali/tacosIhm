@@ -19,13 +19,12 @@ import amazouz.com.example.hp.tacos.activity.ViandeActivity;
  */
 
 public class ViandeFragment extends android.support.v4.app.Fragment{
+
     public LinearLayout but1;
     private TextView tx;
     private ImageView iv;
     private String viande="";
     private String pain;
-
-    public fragmentexchange fragmentexchange = null ;
 
     public static void choiximg(ImageView iv,String a){
         switch(a){
@@ -85,9 +84,7 @@ public class ViandeFragment extends android.support.v4.app.Fragment{
         toy.putExtra("pain", pain);
         toy.putExtra("viande", viande);
         startActivity(toy);
-        if (fragmentexchange != null) {
-            fragmentexchange.onclick();
-        }
+
     }
 
 
@@ -105,25 +102,19 @@ public class ViandeFragment extends android.support.v4.app.Fragment{
         but1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent toy=new Intent(getContext(),SauceActivity.class);
                 toy.putExtra("pain",pain);
                 toy.putExtra("viande",viande);
                 startActivity(toy);
-                if (fragmentexchange != null) {
 
-                    fragmentexchange.onclick();
-
-                }
             }
         });
 
         return view ;
     }
 
-    public interface fragmentexchange{
 
-        public void onclick();
 
-    }
 
 }

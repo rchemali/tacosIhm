@@ -110,12 +110,6 @@ public void click(){
                 toy.putExtra("pain",pain);
                 startActivity(toy);
 
-                if (fragmentexchange != null) {
-
-                    Toast.makeText(getActivity(),"ok",Toast.LENGTH_LONG).show();
-                    fragmentexchange.onclick();
-
-                }
             }
         });
 

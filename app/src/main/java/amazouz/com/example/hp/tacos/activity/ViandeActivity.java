@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -165,9 +166,7 @@ public class ViandeActivity extends AppCompatActivity {
                     promptSpeechInput();
 
 
-
                 }
-
 
 
             }
@@ -375,6 +374,7 @@ public class ViandeActivity extends AppCompatActivity {
                                 // ====== Validate action ======
 
                                 if (firstLaunch != false) {
+
                                     mSensorManager.unregisterListener(proximitySensorEventListener);
                                     viande.nextFragment();
                                     //finish();
@@ -555,6 +555,13 @@ public class ViandeActivity extends AppCompatActivity {
 
                     }
 
+                    else if(voiceCommand.equalsIgnoreCase("menuprecedent") || voiceCommand.equalsIgnoreCase("menuprécédent")
+                   || voiceCommand.equalsIgnoreCase("menuprècèdent")){
+
+                       onBackPressed();
+
+                    }
+
                     else if(voiceCommand.equalsIgnoreCase("suivant")){
 
                         pg=mViewPager.getCurrentItem();
@@ -589,7 +596,6 @@ public class ViandeActivity extends AppCompatActivity {
 
                     }
 
-
                 }
                 break;
             }
@@ -614,7 +620,6 @@ public class ViandeActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             // return PlaceholderFragment.newInstance(position + 1);
              viande = new ViandeFragment();
-
 
             switch(position){
                 case 0:
@@ -661,6 +666,7 @@ public class ViandeActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     protected void onStop() {
         try{
@@ -673,4 +679,5 @@ public class ViandeActivity extends AppCompatActivity {
         mSensorManager.unregisterListener(proximitySensorEventListener);
         super.onStop();
     }
+
 }

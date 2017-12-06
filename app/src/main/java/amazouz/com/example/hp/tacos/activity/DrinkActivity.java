@@ -447,18 +447,6 @@ public class DrinkActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             //return PlaceholderFragment.newInstance(position + 1);
             boisson = new BoissonFragment();
-            boisson.fragmentexchange = new BoissonFragment.fragmentexchange() {
-                @Override
-                public void onclick() {
-                    try{
-                        unregisterReceiver(activityReceiver);
-                        mSensorManager.unregisterListener(proximitySensorEventListener);
-                    }catch (Exception e){
-
-                    }
-
-                }
-            };
 
             switch(position){
                 case 0:
@@ -551,6 +539,13 @@ public class DrinkActivity extends AppCompatActivity {
                         mViewPager.setCurrentItem(3);
                         speechChoice(3);
                         changeBackgroundImage(3);
+
+                    }
+
+                    else if(voiceCommand.equalsIgnoreCase("menuprecedent") || voiceCommand.equalsIgnoreCase("menuprécédent")
+                            || voiceCommand.equalsIgnoreCase("menuprècèdent")){
+
+                        onBackPressed();
 
                     }
 

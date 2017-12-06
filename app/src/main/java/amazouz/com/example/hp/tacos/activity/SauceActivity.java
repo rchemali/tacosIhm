@@ -579,6 +579,13 @@ public class SauceActivity extends AppCompatActivity {
 
                     }
 
+                    else if(voiceCommand.equalsIgnoreCase("menuprecedent") || voiceCommand.equalsIgnoreCase("menuprécédent")
+                            || voiceCommand.equalsIgnoreCase("menuprècèdent")){
+
+                        onBackPressed();
+
+                    }
+
                     else if(voiceCommand.equalsIgnoreCase("suivant")){
 
                         pg=mViewPager.getCurrentItem();

@@ -70,7 +70,6 @@ public class PainActivity extends AppCompatActivity {
 
     LinearLayout linearimages;
 
-    private int dotscount;
     private ImageView[] dots;
 
     ImageView imageMini, imageDouble, imageSimple, imageMaxi, imageMega;
@@ -258,6 +257,8 @@ public class PainActivity extends AppCompatActivity {
             pain = new PainFragment();
 
             switch (position) {
+
+
                 case 0:
                     pain.affichage(0);
                     return pain;
@@ -279,6 +280,9 @@ public class PainActivity extends AppCompatActivity {
                     return pain;
 
             }
+
+            changeBackgroundImage(position);
+
             return null;
         }
 
@@ -426,6 +430,7 @@ public class PainActivity extends AppCompatActivity {
                                 // ====== Validate action ======
 
                                 if (firstLaunch != false) {
+
                                     mSensorManager.unregisterListener(proximitySensorEventListener);
                                     pain.nextFragment();
                                     //finish();
@@ -449,6 +454,7 @@ public class PainActivity extends AppCompatActivity {
                                 // ====== Slice once action ======
                                 pg = mViewPager.getCurrentItem();
                                 if (pg < mSectionsPagerAdapter.getCount() - 1) {
+
                                     pg = pg + 1;
                                     mViewPager.setCurrentItem(pg);
                                     speechChoice(pg);

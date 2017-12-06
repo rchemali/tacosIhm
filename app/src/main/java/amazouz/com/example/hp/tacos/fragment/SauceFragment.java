@@ -90,9 +90,7 @@ public class SauceFragment extends android.support.v4.app.Fragment {
         toy.putExtra("sauce",sauce);
         toy.putExtra("pain",pain);
         startActivity(toy);
-        if (fragmentexchange != null) {
-            fragmentexchange.onclick();
-        }
+
     }
 
 
@@ -115,11 +113,7 @@ public class SauceFragment extends android.support.v4.app.Fragment {
                 toy.putExtra("sauce",sauce);
                 toy.putExtra("pain",pain);
                 startActivity(toy);
-                if (fragmentexchange != null) {
 
-                    fragmentexchange.onclick();
-
-                }
             }
         });
 
